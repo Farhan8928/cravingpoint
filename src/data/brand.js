@@ -22,7 +22,7 @@ export const BRAND = {
     'Brownies, waffles and charcoal wraps in Cheeta Camp, Trombay. Made when you ask, not before.',
 
   // ⚠ PLACEHOLDER — replace with the real number, digits only, country code first.
-  phone: '+919999999999',
+  phone: '+919819940231',
   phoneDisplay: '+91 98199 40231',
   whatsapp: 'https://wa.me/919819940231',
   email: 'hello@cravingpoint.example',
