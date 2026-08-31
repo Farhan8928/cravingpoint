@@ -74,7 +74,7 @@ export default function App() {
           press and a very long scroll for keyboard users. */}
       <a
         href="#collection"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-6 focus:top-6 focus:z-[110] focus:rounded focus:bg-gold focus:px-5 focus:py-3 focus:text-label focus:uppercase focus:text-gold-ink"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-6 focus:top-6 focus:z-[110] focus:bg-accent focus:px-5 focus:py-3 focus:text-label focus:uppercase focus:text-accent-ink"
       >
         Skip to the menu
       </a>
@@ -94,11 +94,12 @@ export default function App() {
       <Footer />
       <StickyBar />
 
-      {/* Film grain over the whole page. `mix-blend-overlay` so it sits in the
-          midtones and leaves the blacks clean. */}
+      {/* Paper grain. Static, not animated: an animated full-viewport blend
+          layer repaints the entire page several times a second, which is exactly
+          the sort of cost that surfaces as scroll stutter for no visible gain. */}
       <div
         aria-hidden="true"
-        className="grain pointer-events-none fixed inset-0 z-[90] opacity-[0.045] mix-blend-overlay animate-grain"
+        className="grain pointer-events-none fixed inset-0 z-[90] opacity-[0.035] mix-blend-multiply dark:opacity-[0.05] dark:mix-blend-overlay"
       />
     </>
   );

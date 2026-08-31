@@ -5,13 +5,13 @@ import { BRAND } from '../data/brand';
 /**
  * The mobile order bar.
  *
- * On a phone the header CTA is hidden behind the hamburger and the hero button
- * scrolls away inside the first sequence, which on a five-screen hero means the
+ * On a phone the header CTA is behind the hamburger and the hero button scrolls
+ * away inside the first sequence — which, over a five-screen hero, means the
  * primary action is off-screen for a very long time. This puts it back.
  *
- * It appears once past the hero rather than immediately — on top of the opening
- * frames it covers the film and pre-empts the pitch — and it carries its own
- * safe-area padding so it clears the iOS home indicator.
+ * It appears once past the hero rather than immediately: over the opening frames
+ * it would cover the film and pre-empt the pitch. It carries its own safe-area
+ * padding so it clears the iOS home indicator.
  */
 export default function StickyBar() {
   const ref = useRef(null);
@@ -41,7 +41,7 @@ export default function StickyBar() {
     <div
       ref={ref}
       style={{ transform: 'translateY(120%)' }}
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-outline-variant/40 bg-ink/90 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-xl md:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-ground/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-md md:hidden"
     >
       <div className="flex items-center gap-3">
         <a

@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#131313" />
+    <meta name="theme-color" content="#F2ECE1" />
 
     <title>Craving Point .88 — Dessert Atelier &amp; Grill, Trombay Mumbai</title>
     <meta
@@ -26,18 +26,46 @@
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Fonts. Preconnect before the stylesheet so the DNS/TLS handshake to the
-         font host overlaps the CSS request instead of following it. -->
+    <!--
+      Theme, applied before first paint.
+
+      This has to be an inline, render-blocking script in <head>. Anything later
+      — the module bundle, a React effect — runs after the browser has already
+      painted, so a returning visitor on dark would get a full-screen flash of
+      bone paper first. Kept deliberately tiny and dependency-free; the key and
+      default are mirrored in src/lib/theme.js.
+    -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('cp88-theme');
+          if (t !== 'dark' && t !== 'light') t = 'light';
+          document.documentElement.setAttribute('data-theme', t);
+          document
+            .querySelector('meta[name="theme-color"]')
+            .setAttribute('content', t === 'dark' ? '#17110D' : '#F2ECE1');
+        } catch (e) {
+          /* blocked storage — the light default in the markup already stands */
+        }
+      })();
+    </script>
+
+    <!-- Fonts. Preconnect first so the DNS/TLS handshake overlaps the CSS
+         request rather than queueing behind it.
+
+         Fraunces (variable, optical-size axis) + Inter Tight. Fraunces can be
+         genuinely high-contrast at display sizes while staying sturdy small —
+         Playfair Display set at 14px is one of the clearest tells of a template. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..700&family=Montserrat:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter+Tight:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
 
     <!-- The hero's first frames decide whether the opening scrub is smooth.
-         Preloading two of them at the mobile tier costs ~40 kB and removes the
-         handshake from the critical path for every device. -->
+         Two at the mobile tier costs ~40 kB and takes the handshake off the
+         critical path for every device. -->
     <link rel="preload" as="image" href="/frames/hero/w720/0001.webp" />
     <link rel="preload" as="image" href="/frames/hero/w720/0002.webp" />
 
@@ -74,20 +102,20 @@
     </script>
 
     <style>
-      /* Holds the page black from the very first paint, before the CSS bundle
-         arrives — otherwise the prerendered markup flashes on white. */
-      html { background: #131313; color-scheme: dark; }
+      /* Holds the correct ground colour from the very first paint, before the
+         CSS bundle arrives. Both themes, so neither flashes the other. */
+      html { background: #f2ece1; }
+      html[data-theme='dark'] { background: #17110d; }
     </style>
   </head>
 
   <body>
     <div id="root"></div>
 
-    <!-- Everything on this page animates from a hidden CSS state. If the bundle
-         never boots — a JS error, a blocked script, a crawler that does not run
-         JS — that state would stay closed and the prerendered content would be
-         invisible. This makes the failure mode "no animation" instead of "no
-         page", and it is removed the moment the module entry runs. -->
+    <!-- Everything animates from a hidden CSS state. If the bundle never boots
+         — a JS error, a blocked script, a crawler that does not run JS — that
+         state would stay closed and the prerendered content would be invisible.
+         This makes the failure mode "no animation" rather than "no page". -->
     <noscript>
       <style>
         .reveal-mask { clip-path: none !important; }

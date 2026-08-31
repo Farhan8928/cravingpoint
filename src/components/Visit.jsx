@@ -7,8 +7,8 @@ import { Magnetic } from './Cursor';
  *
  * The last section before the footer is the one people scroll to on purpose,
  * usually on a phone, usually already outside. So it is the plainest block on
- * the site: no scrub, no parallax, no hover states that a thumb cannot trigger.
- * Address, hours, and two tappable actions.
+ * the site: no scrub, no parallax, no hover states a thumb cannot trigger.
+ * Address, hours, two tappable actions.
  *
  * The map is an iframe only when `mapEmbed` is configured. An empty Google Maps
  * embed renders as a grey box with an error in it, which is worse than a text
@@ -21,25 +21,25 @@ export default function Visit() {
   );
 
   return (
-    <section id="visit" className="bg-ink-deep py-section">
+    <section id="visit" className="bg-ground py-section">
       <div className="mx-auto max-w-container px-gutter">
-        <Reveal className="mb-14 flex items-center gap-6">
-          <span className="eyebrow">Visit</span>
+        <Reveal className="mb-14 flex items-baseline gap-6">
+          <span className="eyebrow">05 — Visit</span>
           <span className="rule flex-1" />
         </Reveal>
 
-        <div className="grid gap-16 md:grid-cols-12">
+        <div className="grid gap-14 md:grid-cols-12">
           <div className="md:col-span-5">
             <SplitLines
               as="h2"
-              className="font-display text-display-md text-cream"
+              className="font-display text-display-md text-ink"
               lines={['Find the', 'counter.']}
             />
 
-            <Reveal delay={0.1} className="mt-10 space-y-10">
+            <Reveal delay={0.1} className="mt-10 space-y-9">
               <div>
-                <h3 className="text-label uppercase text-cream/40">Address</h3>
-                <address className="mt-3 not-italic text-body-lg text-cream/80">
+                <h3 className="text-label-sm uppercase text-muted">Address</h3>
+                <address className="mt-3 text-body-lg not-italic text-ink">
                   {address.line1}
                   <br />
                   {address.line2}
@@ -49,18 +49,18 @@ export default function Visit() {
               </div>
 
               <div>
-                <h3 className="text-label uppercase text-cream/40">Hours</h3>
-                <dl className="mt-3 space-y-2">
+                <h3 className="text-label-sm uppercase text-muted">Hours</h3>
+                <dl className="mt-3 space-y-2 border-t border-line pt-3">
                   {hours.map((h) => (
-                    <div key={h.days} className="flex justify-between gap-6 text-cream/80">
-                      <dt>{h.days}</dt>
-                      <dd className="tabular-nums text-cream/60">{h.time}</dd>
+                    <div key={h.days} className="flex justify-between gap-6">
+                      <dt className="text-ink">{h.days}</dt>
+                      <dd className="tabular-nums text-muted">{h.time}</dd>
                     </div>
                   ))}
                 </dl>
               </div>
 
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-3">
                 <Magnetic>
                   <a
                     href={BRAND.whatsapp}
@@ -77,30 +77,30 @@ export default function Visit() {
                   rel="noopener noreferrer"
                   className="btn-ghost"
                 >
-                  Get Directions
+                  Get directions
                 </a>
               </div>
             </Reveal>
           </div>
 
           <Reveal delay={0.15} className="md:col-span-7">
-            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-outline-variant/40 bg-ink-low">
+            <div className="relative aspect-[4/3] w-full overflow-hidden border border-line bg-sunken">
               {BRAND.mapEmbed ? (
                 <iframe
                   src={BRAND.mapEmbed}
                   title={`Map to ${BRAND.full}`}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  className="h-full w-full border-0 grayscale-[0.9] contrast-125 invert-[0.92] hue-rotate-180"
+                  className="h-full w-full border-0 grayscale-[0.35] contrast-[1.05]"
                 />
               ) : (
                 <a
                   href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-full w-full flex-col items-center justify-center gap-3 text-center transition-colors duration-500 hover:bg-white/[0.03]"
+                  className="flex h-full w-full flex-col items-center justify-center gap-3 text-center transition-colors duration-500 hover:bg-line/40"
                 >
-                  <span className="font-display text-2xl text-cream">
+                  <span className="font-display text-2xl text-ink">
                     {address.line1}, {address.line2}
                   </span>
                   <span className="eyebrow">Open in Google Maps →</span>

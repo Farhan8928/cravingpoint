@@ -4,6 +4,47 @@ Official website for **Craving Point .88** — a dessert atelier and grill in Ch
 
 A single scroll-driven page built around two film sequences scrubbed frame-by-frame on canvas: a chocolate pour over the signature spread, and a chicken wrap built to order on the grill.
 
+Ships **light and dark themes**, light by default.
+
+---
+
+## Design direction
+
+**Cocoa & Bone** — bone paper, espresso ink, one burnt-cacao accent, pulled from
+the footage itself so the page and the film read as one object.
+
+Deliberately **no gold and no pure black.** That pairing is the default "luxury"
+costume, and it is not what actually wins. The colour research behind this:
+
+| Awwwards Food &amp; Drink winner | Palette |
+|---|---|
+| Caffè Gilli (Florentine patisserie, est. 1733) | `#a9bdcc` blue-grey + `#142342` navy |
+| Flora Café | `#F2ECD9` cream + `#B63530` deep red |
+| Sunbeam Bagels &amp; Coffee | `#fa7e3b` orange + `#c3abc6` lilac |
+
+Every one pairs a warm light ground with a single distinctive non-metallic
+colour. Light is the default here for the same reason: dark, warm food
+photography reads best framed on paper.
+
+Type is **Fraunces** (variable serif with an optical-size axis, so the display cut
+can be genuinely high-contrast while small sizes stay sturdy) over **Inter Tight**.
+Playfair Display set at 14px is one of the clearest tells of a template.
+
+### Theming
+
+Every colour resolves to a CSS custom property, so a class like `bg-ground` is
+correct in both modes and there is not a single `dark:` variant in the
+components. Switching rewrites nine variables on `<html>`.
+
+Type that sits *over the film* uses fixed `film-*` colours instead. The footage is
+dark in both themes — theme-following text would vanish the moment someone
+switched to light.
+
+An inline, render-blocking script in `index.html` applies the stored theme before
+first paint; anything later (the bundle, a React effect) runs after the browser
+has already painted, so a returning dark-mode visitor would get a full-screen
+flash of bone paper. Its storage key and default are mirrored in `src/lib/theme.js`.
+
 ---
 
 ## Quick start
@@ -59,7 +100,7 @@ Point it at a different source with `SRC=... npm run assets`.
 
 `src/components/FrameSequence.jsx` + `src/lib/frameLoader.js`.
 
-The section is `N × 100vh` with a sticky viewport inside it. Two decisions
+The section is `N × 100vh` with a sticky viewport inside it. Four decisions
 separate this from the version that stutters:
 
 - **The frame index is animated, not assigned.** Mapping scroll position straight
@@ -67,14 +108,54 @@ separate this from the version that stutters:
   fast flick skips a dozen frames, a slow drag quantises visibly. Instead
   ScrollTrigger scrubs a tweened `{ frame }` object and the canvas redraws from
   that, interpolating between scroll positions.
-- **Loading is ordered and pre-decoded.** 300 parallel `new Image()` calls
-  saturate the connection and arrive in whatever order the network likes. The
-  loader runs a bounded pool in sequence order, jumps a coarse spread of frames to
-  the front of the queue, and uses `createImageBitmap` so decoding never lands
-  inside `drawImage`.
+- **Decoded frames are never retained.** See below — this was the whole problem.
+- **The backing store is capped at the source resolution.** A 1440px canvas at
+  DPR 2 is 2880px of fill rate per frame, for a 1280px master that cannot supply
+  that detail. Backing beyond the source buys nothing and costs the difference on
+  every frame.
+- **Loading is ordered and pre-decoded.** 300 parallel requests saturate the
+  connection and land in whatever order the network likes. The loader runs a
+  bounded pool in sequence order and jumps a coarse spread of frames to the front
+  of the queue, so an early scroll always has something to land on.
 
 Frames that have not arrived are not blanks — `paint()` walks back to the nearest
 loaded frame, so a partly-loaded sequence scrubs coarsely instead of flickering.
+
+### Why this does not use `createImageBitmap`
+
+The obvious implementation decodes every frame to an `ImageBitmap` and keeps the
+array. It is also what made the first build stutter. An ImageBitmap is
+*uncompressed* RGBA the page holds until explicitly closed:
+
+```
+hero:   281 frames × 1280 × 720 × 4 bytes  =  988 MB
+craft:  151 frames × 1280 × 720 × 4 bytes  =  531 MB
+```
+
+— held live, simultaneously. Long before that fills memory the browser is
+fighting to keep it, and the symptom is exactly what it looked like.
+
+`HTMLImageElement` inverts the ownership: the page holds the compressed WebP
+(9.5 MB for the whole hero sequence) and the **browser** owns the decoded bitmaps,
+evicting them under pressure like any other image. The cost is that an evicted
+frame decodes synchronously inside `drawImage`, so `warmWindow()` keeps a sliding
+±24-frame window around the playhead explicitly decoded.
+
+Measured after the change — full hero sequence loaded, scripted scroll through all
+4500px of it:
+
+```
+JS heap                  19 MB
+median frame             16.7 ms   (60 fps)
+p95 frame                16.8 ms
+dropped frames (>32ms)   1 / 157   (0.6%)
+```
+
+Two other things were quietly costing frames and are gone: an animated
+full-viewport grain layer (repainting the whole page several times a second) and
+a pointer-following radial-gradient spotlight driven from CSS variables
+(repainting the viewport on every mousemove). The cursor is transform-only now,
+and the grain is static.
 
 ---
 
@@ -92,6 +173,7 @@ src/
   index.css           tokens, reveal primitives, component classes
   lib/
     motion.js         GSAP + Lenis wiring; the one place plugins register
+    theme.js          light/dark state, mirrored by the boot script in index.html
     frameLoader.js    ordered, pooled, pre-decoded frame loading
   components/         one file per section + the motion primitives
   data/
@@ -126,6 +208,8 @@ A render under 5 000 characters fails the build rather than shipping a blank pag
 - `prefers-reduced-motion` is honoured throughout: Lenis is skipped entirely
   (rather than set to zero smoothing), sequences render a still, the Craft section
   collapses from 3.5 screens to one readable viewport, the marquee stops.
+- Both themes are contrast-checked. `--muted` is the tightest pair at 4.7:1 on
+  its ground, which is why it is `#6F6152` and not the lighter clay it started as.
 - Because reveals start hidden in CSS, a `<noscript>` block in `index.html` forces
   them open — the failure mode is "no animation", not "no page".
 - Skip link, real `tablist` semantics on the counter switch, focus-visible rings,

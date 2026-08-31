@@ -2,20 +2,21 @@ import { useEffect, useRef } from 'react';
 import { gsap, prefersReducedMotion } from '../lib/motion';
 
 /**
- * The custom cursor: a small gold dot with a trailing ring.
+ * The custom cursor: a small accent dot with a trailing ring.
  *
- * Mounted only for devices that actually have a pointer. A custom cursor on a
- * touchscreen is invisible dead weight, and on a hybrid laptop it should appear
- * the moment a mouse is used — hence the `(pointer: fine)` query rather than a
- * one-time touch sniff.
+ * Mounted only where there is a real pointer. A custom cursor on a touchscreen
+ * is invisible dead weight, and on a hybrid laptop it should appear the moment a
+ * mouse is used — hence `(pointer: fine)` rather than a one-time touch sniff.
  *
  * The native cursor is *not* hidden globally. Hiding it and then failing to draw
  * a replacement — a JS error, a slow chunk — leaves a page with no pointer at
- * all, which is close to unusable. It is hidden by this component, on mount,
- * only once its own elements are in the DOM.
+ * all. It is hidden by this component, on mount, once its own elements exist.
  *
  * Position is written with `gsap.quickTo`, which keeps one interpolating tween
- * alive per axis instead of allocating a tween per mousemove.
+ * per axis alive instead of allocating a tween per mousemove. An earlier version
+ * also drove a full-screen radial-gradient spotlight from CSS variables — that
+ * repainted the entire viewport on every pointer move and was a measurable part
+ * of why scrolling felt heavy. Transform-only from here.
  */
 export default function Cursor() {
   const dotRef = useRef(null);
@@ -29,14 +30,13 @@ export default function Cursor() {
     const ring = ringRef.current;
     if (!dot || !ring) return undefined;
 
-    document.documentElement.classList.add('has-custom-cursor');
     gsap.set([dot, ring], { xPercent: -50, yPercent: -50, opacity: 0 });
 
     // The dot tracks tightly; the ring lags, which is what reads as weight.
-    const dotX = gsap.quickTo(dot, 'x', { duration: 0.12, ease: 'power3' });
-    const dotY = gsap.quickTo(dot, 'y', { duration: 0.12, ease: 'power3' });
-    const ringX = gsap.quickTo(ring, 'x', { duration: 0.5, ease: 'power3' });
-    const ringY = gsap.quickTo(ring, 'y', { duration: 0.5, ease: 'power3' });
+    const dotX = gsap.quickTo(dot, 'x', { duration: 0.1, ease: 'power3' });
+    const dotY = gsap.quickTo(dot, 'y', { duration: 0.1, ease: 'power3' });
+    const ringX = gsap.quickTo(ring, 'x', { duration: 0.45, ease: 'power3' });
+    const ringY = gsap.quickTo(ring, 'y', { duration: 0.45, ease: 'power3' });
 
     let shown = false;
 
@@ -49,26 +49,21 @@ export default function Cursor() {
       dotY(e.clientY);
       ringX(e.clientX);
       ringY(e.clientY);
-
-      // Feeds the gold spotlight that follows the pointer across the hero.
-      document.documentElement.style.setProperty('--px', `${e.clientX}px`);
-      document.documentElement.style.setProperty('--py', `${e.clientY}px`);
     };
 
-    // Interactive targets grow the ring. Delegation rather than per-element
-    // listeners, so cards rendered later are covered without re-binding.
+    // Delegation rather than per-element listeners, so anything rendered later
+    // is covered without re-binding.
     const INTERACTIVE = 'a, button, [data-cursor="grow"], input, textarea, select';
 
     const onOver = (e) => {
       if (e.target.closest?.(INTERACTIVE)) {
-        gsap.to(ring, { scale: 2.4, borderColor: 'rgba(242,202,80,0.9)', duration: 0.4 });
+        gsap.to(ring, { scale: 2.2, duration: 0.4 });
         gsap.to(dot, { scale: 0, duration: 0.3 });
       }
     };
-
     const onOut = (e) => {
       if (e.target.closest?.(INTERACTIVE)) {
-        gsap.to(ring, { scale: 1, borderColor: 'rgba(242,202,80,0.35)', duration: 0.4 });
+        gsap.to(ring, { scale: 1, duration: 0.4 });
         gsap.to(dot, { scale: 1, duration: 0.3 });
       }
     };
@@ -85,7 +80,6 @@ export default function Cursor() {
     document.addEventListener('mouseenter', onEnter);
 
     return () => {
-      document.documentElement.classList.remove('has-custom-cursor');
       window.removeEventListener('mousemove', onMove);
       document.removeEventListener('mouseover', onOver);
       document.removeEventListener('mouseout', onOut);
@@ -96,14 +90,16 @@ export default function Cursor() {
 
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[100] hidden md:block">
+      {/* mix-blend-difference keeps both marks visible over paper and over the
+          film without needing to know which is underneath. */}
       <div
         ref={ringRef}
-        className="fixed left-0 top-0 h-9 w-9 rounded-full border border-gold/35"
+        className="fixed left-0 top-0 h-8 w-8 rounded-full border border-accent mix-blend-difference"
         style={{ opacity: 0 }}
       />
       <div
         ref={dotRef}
-        className="fixed left-0 top-0 h-1.5 w-1.5 rounded-full bg-gold"
+        className="fixed left-0 top-0 h-1.5 w-1.5 rounded-full bg-accent"
         style={{ opacity: 0 }}
       />
     </div>
@@ -113,11 +109,11 @@ export default function Cursor() {
 /**
  * A button that leans toward the pointer when it comes close.
  *
- * The magnetism is capped at `strength` px and released on leave with a slight
- * elastic ease. Applied to primary CTAs only — on every link it stops reading as
- * a special affordance and starts reading as a page that will not sit still.
+ * Capped at `strength` px and released with a slight elastic ease. Applied to
+ * primary CTAs only — on every link it stops reading as a special affordance and
+ * starts reading as a page that will not sit still.
  */
-export function Magnetic({ children, strength = 18, className = '' }) {
+export function Magnetic({ children, strength = 16, className = '' }) {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -135,10 +131,7 @@ export function Magnetic({ children, strength = 18, className = '' }) {
       xTo(Math.max(-1, Math.min(1, dx)) * strength);
       yTo(Math.max(-1, Math.min(1, dy)) * strength);
     };
-
-    const onLeave = () => {
-      gsap.to(el, { x: 0, y: 0, duration: 0.9, ease: 'elastic.out(1, 0.4)' });
-    };
+    const onLeave = () => gsap.to(el, { x: 0, y: 0, duration: 0.9, ease: 'elastic.out(1, 0.4)' });
 
     el.addEventListener('mousemove', onMove);
     el.addEventListener('mouseleave', onLeave);

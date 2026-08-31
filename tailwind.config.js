@@ -1,102 +1,104 @@
 /**
- * The token set here is DESIGN.md made machine-readable.
+ * Semantic tokens, not literal colours.
  *
- * Only the values the site actually uses are lifted across — the source design
- * doc ships a full Material palette (fifty-odd roles), and carrying all of it
- * would leave most of the theme dead weight that autocompletes over the names
- * that matter. The rule of thumb: a role earns a token once two components need
- * it, otherwise it stays an arbitrary value at the call site.
+ * Every colour resolves to a CSS custom property defined in index.css, so a
+ * class like `bg-ground` is correct in both light and dark without a single
+ * `dark:` variant anywhere in the components. Swapping the theme rewrites eight
+ * variables on <html>; nothing in the markup changes.
+ *
+ * The `rgb(var(--x) / <alpha-value>)` form is what keeps Tailwind's opacity
+ * modifiers working — `text-ink/60` still composites correctly, which a plain
+ * `var(--ink)` would silently break.
+ *
+ * Palette: Cocoa & Bone. Bone paper, espresso ink, one burnt-cacao accent —
+ * pulled from the footage itself (chocolate, cream, charcoal) so the page and
+ * the film read as one object. Deliberately no gold and no pure black: that
+ * pairing is the default "luxury" costume every generated food site wears.
  */
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
+  darkMode: ['class', '[data-theme="dark"]'],
   theme: {
     extend: {
       colors: {
-        // Matte black canvas. `ink` is the base; the containers step up in tone
-        // rather than in shadow, which is how the design doc builds hierarchy.
+        ground: 'rgb(var(--ground) / <alpha-value>)',
+        raised: 'rgb(var(--raised) / <alpha-value>)',
+        sunken: 'rgb(var(--sunken) / <alpha-value>)',
         ink: {
-          DEFAULT: '#131313',
-          deep: '#0a0a0a',
-          low: '#1c1b1b',
-          mid: '#20201f',
-          high: '#2a2a2a',
-          top: '#353535',
+          DEFAULT: 'rgb(var(--ink) / <alpha-value>)',
+          soft: 'rgb(var(--ink-soft) / <alpha-value>)',
         },
-        // Champagne gold — the "finishing touch on a dessert". Used sparingly.
-        gold: {
-          DEFAULT: '#f2ca50',
-          dim: '#e9c349',
-          deep: '#d4af37',
-          ink: '#3c2f00',
+        muted: 'rgb(var(--muted) / <alpha-value>)',
+        line: 'rgb(var(--line) / <alpha-value>)',
+        accent: {
+          DEFAULT: 'rgb(var(--accent) / <alpha-value>)',
+          ink: 'rgb(var(--accent-ink) / <alpha-value>)',
         },
-        cream: {
-          DEFAULT: '#e5e2e1',
-          warm: '#d0c5af',
-          dim: '#99907c',
-        },
-        outline: {
-          DEFAULT: '#99907c',
-          variant: '#4d4635',
+        // Fixed values for type that sits over the film, which is dark in both
+        // themes — these must NOT follow the theme or the hero headline
+        // disappears in light mode.
+        film: {
+          ink: '#F4EEE4',
+          muted: '#B9AE9E',
+          ground: '#100C09',
+          // The light theme's accent (#B0432B) is a dark red — correct on paper,
+          // barely 2.5:1 over the footage. Type over film uses the ember cut in
+          // both themes.
+          accent: '#E0664A',
         },
       },
       fontFamily: {
-        display: ['"Playfair Display"', 'Georgia', 'serif'],
-        sans: ['Montserrat', 'system-ui', 'sans-serif'],
+        // Fraunces over Playfair: it is a variable serif with an optical-size
+        // axis, so the display cut can be genuinely high-contrast while the
+        // small sizes stay sturdy. Playfair at 14px is the single most common
+        // tell of a template.
+        display: ['Fraunces', 'Georgia', 'serif'],
+        sans: ['"Inter Tight"', 'Inter', 'system-ui', 'sans-serif'],
       },
       fontSize: {
-        // Fluid editorial scale. The clamp middles are viewport-relative so the
-        // big display type keeps its "fashion magazine" proportion between
-        // breakpoints instead of stepping.
-        'display-xl': ['clamp(3rem, 13vw, 13rem)', { lineHeight: '0.88', letterSpacing: '-0.04em' }],
-        'display-lg': ['clamp(2.5rem, 8vw, 6rem)', { lineHeight: '1', letterSpacing: '-0.03em' }],
-        'display-md': ['clamp(2rem, 5vw, 3.5rem)', { lineHeight: '1.08', letterSpacing: '-0.02em' }],
-        'headline': ['clamp(1.75rem, 3.4vw, 2.75rem)', { lineHeight: '1.2', letterSpacing: '-0.01em' }],
-        'body-lg': ['clamp(1rem, 1.4vw, 1.125rem)', { lineHeight: '1.7', letterSpacing: '0.01em' }],
-        'label': ['0.75rem', { lineHeight: '1', letterSpacing: '0.22em' }],
-        'label-sm': ['0.625rem', { lineHeight: '1', letterSpacing: '0.28em' }],
+        'display-xl': ['clamp(2.75rem, 11.5vw, 11rem)', { lineHeight: '0.9', letterSpacing: '-0.035em' }],
+        'display-lg': ['clamp(2.25rem, 7vw, 5.5rem)', { lineHeight: '0.98', letterSpacing: '-0.028em' }],
+        'display-md': ['clamp(1.875rem, 4.5vw, 3.25rem)', { lineHeight: '1.06', letterSpacing: '-0.02em' }],
+        headline: ['clamp(1.5rem, 3vw, 2.5rem)', { lineHeight: '1.18', letterSpacing: '-0.012em' }],
+        'body-lg': ['clamp(1rem, 1.3vw, 1.1875rem)', { lineHeight: '1.65', letterSpacing: '0' }],
+        label: ['0.75rem', { lineHeight: '1', letterSpacing: '0.18em' }],
+        'label-sm': ['0.6875rem', { lineHeight: '1', letterSpacing: '0.22em' }],
       },
       spacing: {
-        // 8px rhythm, plus the two section rhythms the design doc calls for.
-        section: 'clamp(6rem, 14vw, 12rem)',
+        section: 'clamp(5rem, 12vw, 10rem)',
         gutter: 'clamp(1.25rem, 4vw, 4rem)',
       },
       maxWidth: {
-        container: '1280px',
-        prose: '58ch',
+        container: '1320px',
+        prose: '60ch',
       },
       borderRadius: {
-        DEFAULT: '0.5rem',
-        lg: '1rem',
+        DEFAULT: '0.375rem',
+        lg: '0.75rem',
+        xl: '1.25rem',
       },
       boxShadow: {
-        // High-diffusion, gold-tinted — "a warm glow under gold-bordered
-        // elements", never a hard drop shadow.
-        glow: '0 0 60px -12px rgba(212, 175, 55, 0.35)',
-        lift: '0 40px 80px -40px rgba(0, 0, 0, 0.9)',
+        // Neutral and soft. A coloured shadow on a paper ground reads as a
+        // mistake rather than as warmth.
+        frame: '0 32px 64px -32px rgb(var(--shadow) / 0.28)',
+        lift: '0 12px 32px -16px rgb(var(--shadow) / 0.22)',
       },
       transitionTimingFunction: {
-        // The single easing curve the whole site moves on. Matching CSS
-        // transitions to the GSAP default keeps hover and scroll motion from
-        // reading as two different systems.
         lux: 'cubic-bezier(0.22, 1, 0.36, 1)',
       },
+      // 400ms is the site's standard UI transition and is not a Tailwind default.
+      transitionDuration: {
+        400: '400ms',
+      },
       keyframes: {
-        marquee: {
-          from: { transform: 'translate3d(0, 0, 0)' },
-          to: { transform: 'translate3d(-50%, 0, 0)' },
-        },
-        grain: {
-          '0%, 100%': { transform: 'translate(0, 0)' },
-          '10%': { transform: 'translate(-5%, -5%)' },
-          '30%': { transform: 'translate(3%, -8%)' },
-          '50%': { transform: 'translate(-4%, 6%)' },
-          '70%': { transform: 'translate(6%, 3%)' },
-          '90%': { transform: 'translate(-2%, 7%)' },
+        drip: {
+          '0%': { transform: 'translateY(-100%)' },
+          '60%': { transform: 'translateY(200%)' },
+          '100%': { transform: 'translateY(200%)' },
         },
       },
       animation: {
-        marquee: 'marquee 40s linear infinite',
-        grain: 'grain 1.2s steps(3) infinite',
+        drip: 'drip 2.4s ease-in-out infinite',
       },
     },
   },

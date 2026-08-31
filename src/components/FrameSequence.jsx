@@ -1,29 +1,35 @@
 import { useEffect, useRef, useState } from 'react';
-import { gsap, ScrollTrigger, prefersReducedMotion } from '../lib/motion';
-import { loadSequence, pickTier, disposeFrames } from '../lib/frameLoader';
+import { gsap, prefersReducedMotion } from '../lib/motion';
+import { loadSequence, pickTier, warmWindow, disposeFrames, TIER_WIDTH } from '../lib/frameLoader';
 import { SEQUENCES } from '../data/sequences';
 
 /**
  * A scroll-scrubbed film sequence painted to a canvas.
  *
- * The section is `height: N * 100vh` with a sticky viewport inside it; scroll
- * progress across that height maps to a frame index. Two details separate this
- * from the version that stutters:
+ * The section is `N * 100vh` with a sticky viewport inside it; scroll progress
+ * across that height maps to a frame index. Four things keep it smooth:
  *
  * **The frame index is animated, not assigned.** Mapping scroll position
- * straight onto a frame number means the canvas only ever changes when a scroll
- * event fires, so a fast flick skips a dozen frames and a slow drag quantises
- * visibly. Instead ScrollTrigger scrubs a tweened `{ frame }` object and the
- * canvas redraws from that, which interpolates through the frames between two
- * scroll positions and gives the sequence its own momentum.
+ * straight onto a frame number means the canvas only changes when a scroll event
+ * fires — a fast flick skips a dozen frames, a slow drag quantises visibly.
+ * ScrollTrigger scrubs a tweened `{ frame }` object instead and the canvas
+ * redraws from that, so it interpolates between scroll positions.
+ *
+ * **The backing store is capped at the source resolution.** A 1440px-wide canvas
+ * at DPR 2 is 2880px of fill rate per frame — for a 1280px master, which cannot
+ * supply that detail. Backing it beyond the source buys nothing and costs the
+ * whole difference on every single frame. This was a real part of the stutter.
+ *
+ * **Decoded frames are windowed**, not all retained — see frameLoader.js, which
+ * is where the 988 MB of held RGBA in the first build came from.
  *
  * **Drawing is decoupled from React.** Frame state lives in refs and paints in a
- * `gsap.ticker` callback. Routing 280 frames through `setState` would schedule
+ * `gsap.ticker` callback; routing 280 frames through `setState` would schedule
  * 280 reconciliations a second for a canvas React does not own.
  *
- * Frames that have not arrived yet are not blanks — `paint` walks backwards to
- * the nearest loaded frame, so a partly-loaded sequence scrubs coarsely rather
- * than flickering to black.
+ * Frames that have not arrived are not blanks — `paint` walks back to the
+ * nearest loaded frame, so a partly-loaded sequence scrubs coarsely rather than
+ * flickering to black.
  */
 export default function FrameSequence({
   id,
@@ -38,8 +44,12 @@ export default function FrameSequence({
   const sectionRef = useRef(null);
   const canvasRef = useRef(null);
   const framesRef = useRef([]);
-  const stateRef = useRef({ frame: 1, drawn: -1 });
+  const stateRef = useRef({ frame: 1, drawn: -1, warmed: -1 });
   const [loaded, setLoaded] = useState(0);
+  // Drives the LQIP's removal. Keeping a blurred, upscaled full-screen image
+  // permanently under the canvas means compositing a 40px blur on every frame
+  // for the whole section — pure cost once a real frame is up.
+  const [painted, setPainted] = useState(false);
 
   useEffect(() => {
     if (!meta) return undefined;
@@ -50,14 +60,19 @@ export default function FrameSequence({
     const controller = new AbortController();
     const frames = framesRef.current;
     const reduced = prefersReducedMotion();
+    const tier = pickTier();
+    const sourceWidth = TIER_WIDTH[tier];
 
-    /** Backs the canvas at device pixels, capped at 2x — 3x costs fill rate for
-     *  no visible gain on food photography this soft. */
     function resize() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const { clientWidth: w, clientHeight: h } = canvas;
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
+      if (!w || !h) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // Never back the canvas wider than the frames can fill. `cover` may crop
+      // horizontally, so allow a little headroom for the vertical-fit case.
+      const maxWidth = sourceWidth * 1.15;
+      const scale = Math.min(dpr, Math.max(1, maxWidth / w));
+      canvas.width = Math.round(w * scale);
+      canvas.height = Math.round(h * scale);
       stateRef.current.drawn = -1; // force a repaint at the new size
       paint();
     }
@@ -69,27 +84,35 @@ export default function FrameSequence({
 
       let index = Math.min(Math.max(target, 1), meta.count);
       while (index > 1 && !frames[index]) index -= 1;
-      const bitmap = frames[index];
-      if (!bitmap) return;
+      const img = frames[index];
+      if (!img) return;
 
       const cw = canvas.width;
       const ch = canvas.height;
-      const iw = bitmap.width;
-      const ih = bitmap.height;
+      const iw = img.naturalWidth || img.width;
+      const ih = img.naturalHeight || img.height;
+      if (!iw || !ih) return;
+
       const scale = fit === 'contain' ? Math.min(cw / iw, ch / ih) : Math.max(cw / iw, ch / ih);
       const dw = iw * scale;
       const dh = ih * scale;
 
-      ctx.drawImage(bitmap, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
+      ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
       stateRef.current.drawn = target;
+      if (!painted) setPainted(true);
+
+      // Re-warm only when the playhead has actually travelled, not every frame.
+      if (Math.abs(target - stateRef.current.warmed) > 8) {
+        stateRef.current.warmed = target;
+        warmWindow(frames, target, meta.count);
+      }
     }
 
     resize();
 
-    // Priority order: the frame the poster shows, the first frame, then a coarse
-    // spread across the whole sequence. The spread means an early scroll always
-    // has *something* to land on instead of holding frame 1 until the pool
-    // catches up.
+    // Priority order: frame 1, then a coarse spread across the sequence, so an
+    // early scroll always lands on something instead of holding frame 1 until
+    // the pool catches up.
     const spread = Array.from({ length: 12 }, (_, i) =>
       Math.max(1, Math.round((i / 11) * meta.count))
     );
@@ -97,13 +120,11 @@ export default function FrameSequence({
     loadSequence({
       key: sequence,
       count: meta.count,
-      tier: pickTier(),
+      tier,
       priority: [1, ...spread],
       signal: controller.signal,
-      onFrame: (index, bitmap) => {
-        frames[index] = bitmap;
-        // The very first frames should appear immediately rather than waiting
-        // for a scroll event to invalidate the canvas.
+      onFrame: (index, img) => {
+        frames[index] = img;
         if (index <= 2 || stateRef.current.drawn < 0) {
           stateRef.current.drawn = -1;
           paint();
@@ -136,9 +157,9 @@ export default function FrameSequence({
           trigger: section,
           start: 'top top',
           end: 'bottom bottom',
-          // A little scrub latency is what turns a 1:1 mapping into something
-          // with weight. Above ~1s it starts to feel disconnected from input.
-          scrub: 0.6,
+          // A little scrub latency is what gives the film weight. Past ~1s it
+          // stops feeling connected to the input.
+          scrub: 0.5,
         },
       });
     }
@@ -152,6 +173,8 @@ export default function FrameSequence({
       disposeFrames(frames);
       framesRef.current = [];
     };
+    // `painted` is written by this effect and must not re-run it.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sequence, meta, fit, onProgress]);
 
   if (!meta) return null;
@@ -160,23 +183,25 @@ export default function FrameSequence({
     <section
       id={id}
       ref={sectionRef}
-      className={`relative ${className}`}
+      className={`relative bg-film-ground ${className}`}
       style={{ height: `${scrollLength * 100}vh` }}
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden">
-        {/* The LQIP sits under the canvas so the section is never a black hole
-            during the first decode. It is 24px wide and blurred to nothing. */}
-        <img
-          src={meta.lqip}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover scale-110 blur-2xl"
-        />
+        {/* 24px LQIP, blurred up. Removed as soon as a real frame is on the
+            canvas — see the note on `painted`. */}
+        {!painted && (
+          <img
+            src={meta.lqip}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl"
+          />
+        )}
 
         <canvas
           ref={canvasRef}
           className="absolute inset-0 h-full w-full"
-          // The canvas is decorative; the section's own copy carries the meaning.
+          // Decorative: the section's own copy carries the meaning.
           role="img"
           aria-label={meta.label}
         />
@@ -185,9 +210,9 @@ export default function FrameSequence({
 
         {children}
 
-        {/* A hairline progress rule, not a spinner. Disappears once loaded. */}
+        {/* A hairline progress rule, not a spinner. Fades out once complete. */}
         <div
-          className="pointer-events-none absolute bottom-0 left-0 h-px bg-gold/60 transition-opacity duration-1000"
+          className="pointer-events-none absolute bottom-0 left-0 h-px bg-film-accent transition-opacity duration-1000"
           style={{ width: `${loaded * 100}%`, opacity: loaded >= 1 ? 0 : 1 }}
         />
       </div>

@@ -8,16 +8,15 @@ import Img from './Img';
 /**
  * The menu, as two switchable counters.
  *
- * A tab pattern rather than two stacked lists: the sweet and hot counters are
- * genuinely alternatives — nobody scrolls the desserts to reach the wraps — and
- * stacking them would put 10 rows of text between the hero and the visit
- * details. Switching is animated, but the inactive panel is unmounted, so the
- * DOM only ever holds the menu the reader asked for.
+ * A tab pattern rather than two stacked lists: sweet and hot are genuinely
+ * alternatives — nobody scrolls the desserts to reach the wraps — and stacking
+ * them would put ten rows of text between the hero and the visit details. The
+ * inactive panel is unmounted, so the DOM only holds the menu that was asked for.
  *
  * Rows, not cards. Only four items have photography (the stills pulled from the
- * two films); a card grid would leave six holes that want stock imagery, and
- * stock food photography is the fastest way to make a real kitchen look fake. So
- * the list is typographic, and the photographed items get a hover preview that
+ * two films); a card grid would leave six holes wanting stock imagery, and stock
+ * food photography is the fastest way to make a real kitchen look fake. So the
+ * list is typographic, and the photographed items get a hover preview that
  * follows the cursor — the images are a reward for exploring, not a grid to fill.
  */
 export default function Collection() {
@@ -32,11 +31,10 @@ export default function Collection() {
   useEffect(() => {
     const el = listRef.current;
     if (!el || prefersReducedMotion()) return undefined;
-
     const tween = gsap.fromTo(
       el.querySelectorAll('[data-row]'),
-      { opacity: 0, y: 24 },
-      { opacity: 1, y: 0, duration: 0.7, stagger: 0.05, ease: 'power3.out' }
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.65, stagger: 0.045, ease: 'power3.out' }
     );
     return () => tween.kill();
   }, [active]);
@@ -47,14 +45,12 @@ export default function Collection() {
     if (!el || prefersReducedMotion()) return undefined;
     if (!window.matchMedia('(pointer: fine)').matches) return undefined;
 
-    const xTo = gsap.quickTo(el, 'x', { duration: 0.7, ease: 'power3' });
-    const yTo = gsap.quickTo(el, 'y', { duration: 0.7, ease: 'power3' });
-
+    const xTo = gsap.quickTo(el, 'x', { duration: 0.65, ease: 'power3' });
+    const yTo = gsap.quickTo(el, 'y', { duration: 0.65, ease: 'power3' });
     const onMove = (e) => {
       xTo(e.clientX + 28);
-      yTo(e.clientY - 140);
+      yTo(e.clientY - 130);
     };
-
     window.addEventListener('mousemove', onMove, { passive: true });
     return () => window.removeEventListener('mousemove', onMove);
   }, []);
@@ -64,24 +60,24 @@ export default function Collection() {
     if (!el || prefersReducedMotion()) return;
     gsap.to(el, {
       opacity: hovered ? 1 : 0,
-      scale: hovered ? 1 : 0.92,
+      scale: hovered ? 1 : 0.94,
       duration: 0.45,
       ease: 'power3.out',
     });
   }, [hovered]);
 
   return (
-    <section id="collection" className="relative bg-ink-deep py-section">
+    <section id="collection" className="relative bg-ground py-section">
       <div className="mx-auto max-w-container px-gutter">
-        <Reveal className="mb-14 flex items-center gap-6">
-          <span className="eyebrow">The Collection</span>
+        <Reveal className="mb-14 flex items-baseline gap-6">
+          <span className="eyebrow">02 — The Collection</span>
           <span className="rule flex-1" />
         </Reveal>
 
-        <div className="mb-16 grid gap-10 md:grid-cols-12 md:items-end">
+        <div className="mb-14 grid gap-10 md:grid-cols-12 md:items-end">
           <SplitLines
             as="h2"
-            className="font-display text-display-lg text-cream md:col-span-7"
+            className="font-display text-display-lg text-ink md:col-span-7"
             lines={['Two counters,', 'one obsession.']}
           />
           <Reveal className="md:col-span-5" delay={0.15}>
@@ -89,9 +85,9 @@ export default function Collection() {
           </Reveal>
         </div>
 
-        {/* Counter switch. Real buttons with aria-selected rather than styled
-            divs, so the control is operable from the keyboard as a tablist. */}
-        <div role="tablist" aria-label="Menu counters" className="mb-12 flex flex-wrap gap-3">
+        {/* Real buttons with aria-selected rather than styled divs, so the
+            control is operable from the keyboard as a tablist. */}
+        <div role="tablist" aria-label="Menu counters" className="mb-10 flex flex-wrap gap-2">
           {COLLECTIONS.map((c) => {
             const selected = c.id === active;
             return (
@@ -103,10 +99,10 @@ export default function Collection() {
                 aria-controls={`panel-${c.id}`}
                 id={`tab-${c.id}`}
                 onClick={() => setActive(c.id)}
-                className={`btn text-label ${
+                className={`btn !py-3 ${
                   selected
-                    ? 'bg-gold text-gold-ink'
-                    : 'border border-outline-variant text-cream/60 hover:border-gold hover:text-gold'
+                    ? 'bg-ink text-ground'
+                    : 'border border-line text-muted hover:border-accent hover:text-accent'
                 }`}
               >
                 {c.title}
@@ -120,7 +116,7 @@ export default function Collection() {
           role="tabpanel"
           id={`panel-${collection.id}`}
           aria-labelledby={`tab-${collection.id}`}
-          className="border-t border-outline-variant/40"
+          className="border-t border-line"
         >
           {collection.items.map((item) => (
             <article
@@ -129,13 +125,13 @@ export default function Collection() {
               data-cursor={item.still ? 'grow' : undefined}
               onMouseEnter={() => item.still && setHovered(item)}
               onMouseLeave={() => setHovered(null)}
-              className="group grid grid-cols-12 items-baseline gap-4 border-b border-outline-variant/40 py-7 transition-colors duration-500 ease-lux hover:bg-white/[0.02] md:py-8"
+              className="group grid grid-cols-12 items-baseline gap-4 border-b border-line py-6 transition-colors duration-500 ease-lux hover:bg-sunken/60 md:py-7"
             >
-              <h3 className="col-span-9 font-display text-2xl text-cream transition-transform duration-500 ease-lux group-hover:translate-x-2 md:col-span-5 md:text-3xl">
+              <h3 className="col-span-9 font-display text-2xl text-ink transition-transform duration-500 ease-lux group-hover:translate-x-2 md:col-span-5 md:text-3xl">
                 {item.name}
               </h3>
 
-              <p className="col-span-12 order-3 text-sm text-cream/50 md:order-none md:col-span-5">
+              <p className="order-3 col-span-12 text-sm text-muted md:order-none md:col-span-5">
                 {item.note}
               </p>
 
@@ -143,38 +139,31 @@ export default function Collection() {
                 {item.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="hidden rounded-full border border-gold/30 px-3 py-1 text-label-sm uppercase text-gold/80 lg:inline-block"
+                    className="hidden border border-accent/40 px-2.5 py-1 text-label-sm uppercase text-accent lg:inline-block"
                   >
                     {tag}
                   </span>
                 ))}
-                <span className="font-display text-xl text-gold">{item.price}</span>
+                <span className="font-display text-xl text-ink">{item.price}</span>
               </div>
             </article>
           ))}
         </div>
 
-        <Reveal className="mt-16 flex flex-wrap items-center gap-6" delay={0.1}>
-          <a
-            href={BRAND.whatsapp}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary"
-          >
+        <Reveal className="mt-12 flex flex-wrap items-center gap-6" delay={0.1}>
+          <a href={BRAND.whatsapp} target="_blank" rel="noopener noreferrer" className="btn-primary">
             Order on WhatsApp
           </a>
-          <p className="text-sm text-cream/40">
-            Prices are indicative — confirm at the counter.
-          </p>
+          <p className="text-sm text-muted">Prices are indicative — confirm at the counter.</p>
         </Reveal>
       </div>
 
-      {/* The hover preview. Fixed, pointer-events-none, and hidden from AT — the
-          row text is the accessible content; this is decoration on top of it. */}
+      {/* The hover preview. Fixed, pointer-events-none, hidden from AT — the row
+          text is the accessible content; this is decoration on top of it. */}
       <div
         ref={previewRef}
         aria-hidden="true"
-        className="pointer-events-none fixed left-0 top-0 z-40 hidden h-64 w-96 overflow-hidden rounded-lg shadow-lift md:block"
+        className="pointer-events-none fixed left-0 top-0 z-40 hidden h-60 w-80 overflow-hidden shadow-frame md:block"
         style={{ opacity: 0 }}
       >
         {hovered?.still && (
@@ -184,7 +173,7 @@ export default function Collection() {
             width={800}
             height={450}
             max={800}
-            sizes="384px"
+            sizes="320px"
             className="h-full w-full object-cover"
           />
         )}
