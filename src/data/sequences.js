@@ -3,11 +3,11 @@
 export const SEQUENCES = {
   "hero": {
     "key": "hero",
-    "count": 281,
-    "sourceFrames": 600,
+    "count": 247,
+    "sourceFrames": 532,
     "poster": "/images/poster-hero.webp",
     "lqip": "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAADwAwCdASoYAA4APxFysVCsJqSnMAgBgCIJaQDLMTfokObq332M70+AAP6tut6bEi6FTVvE60xjIAAA",
-    "label": "Chocolate pour over the signature spread"
+    "label": "Brownies falling into chocolate"
   },
   "craft": {
     "key": "craft",

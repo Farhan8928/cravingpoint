@@ -49,8 +49,24 @@ const SEQUENCES = {
     dir: 'frames_video1',
     step: 2,
     hold: { until: 60, step: 6 },
-    poster: 300,
-    label: 'Chocolate pour over the signature spread',
+    /**
+     * Stop at 532, not at 600.
+     *
+     * The master is a cut-together reel, and a scene-cut pass over it
+     * (consecutive-frame difference on a 32x18 greyscale downsample) finds its
+     * last cut at frame ~540. Everything before that is real commercial food
+     * footage. Everything after is a single AI-generated wide shot of a dessert
+     * table — impossible symmetry, steam that resolves into nothing, an oil
+     * bottle no dessert counter owns — and it is unmistakable.
+     *
+     * The client flagged exactly this look on another section without knowing it
+     * came from their own reel. Ending on 532 closes the hero on the real
+     * brownie-and-chocolate splash instead, which is both genuine and a stronger
+     * final frame than the table ever was.
+     */
+    end: 532,
+    poster: 520,
+    label: 'Brownies falling into chocolate',
   },
   craft: {
     dir: 'frames_video3',
@@ -66,10 +82,16 @@ const TIERS = [
 ];
 
 /** Frames pulled out of the sequences to serve as ordinary stills elsewhere. */
+/**
+ * Frames pulled out of the sequences to serve as ordinary stills.
+ *
+ * All of these sit inside the real-footage range. `still-spread` used to be
+ * frame 600 — the AI table — and is gone.
+ */
 const STILLS = {
-  'still-spread': { seq: 'hero', frame: 600, w: 2000, h: 1125 },
+  'still-splash': { seq: 'hero', frame: 520, w: 1600, h: 900 },
+  'still-waffle': { seq: 'hero', frame: 420, w: 1600, h: 900 },
   'still-pour': { seq: 'hero', frame: 300, w: 1600, h: 900 },
-  'still-slate': { seq: 'hero', frame: 1, w: 1600, h: 900 },
   'still-wrap': { seq: 'craft', frame: 300, w: 1600, h: 900 },
   'still-grill': { seq: 'craft', frame: 150, w: 1600, h: 900 },
 };
@@ -82,7 +104,9 @@ const frameFile = (dir, n) => path.join(SRC, dir, `frame_${pad(n)}.png`);
  * of the shot. Returns 1-based master indices in order.
  */
 function selectFrames(dir, cfg) {
-  const total = fs.readdirSync(path.join(SRC, dir)).filter((f) => f.endsWith('.png')).length;
+  const onDisk = fs.readdirSync(path.join(SRC, dir)).filter((f) => f.endsWith('.png')).length;
+  // `end` trims footage we do not want to ship at all — see the note on `hero`.
+  const total = Math.min(cfg.end || onDisk, onDisk);
   const picked = [];
   for (let n = 1; n <= total; n += 1) {
     const inHold = cfg.hold && n <= cfg.hold.until;

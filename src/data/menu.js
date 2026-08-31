@@ -56,7 +56,7 @@ export const COLLECTIONS = [
       },
       {
         name: 'Gold Leaf Petit Fours',
-        note: 'Delicate chocolate ganache, 24k gold leaf — by order',
+        note: 'Delicate chocolate ganache, 24k gold leaf. By order only',
         price: '₹640',
         tags: ['Limited'],
         image: 'dish-petitfours',

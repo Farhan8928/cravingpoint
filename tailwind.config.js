@@ -69,11 +69,14 @@ export default {
         //   mono    — Martian Mono. Carries the entire UI layer: labels, nav,
         //             buttons, prices, stats. This is the biggest single reason
         //             the page reads as designed rather than assembled.
-        //   sans    — Inter Tight. Body copy only, where a mono would be a
-        //             readability tax on anything longer than a line.
+        //   sans    — Instrument Sans. Body copy only, where a mono would be a
+        //             readability tax on anything longer than a line. This was
+        //             Inter Tight; Inter is the single most-cited typographic
+        //             tell of a generated site, and a face from that family was
+        //             doing nothing here that a more characterful one could not.
         display: ['Fraunces', 'Georgia', 'serif'],
         mono: ['"Martian Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
-        sans: ['"Inter Tight"', 'Inter', 'system-ui', 'sans-serif'],
+        sans: ['"Instrument Sans"', 'system-ui', 'sans-serif'],
       },
       fontSize: {
         'display-xl': ['clamp(2.75rem, 11.5vw, 11rem)', { lineHeight: '0.9', letterSpacing: '-0.035em' }],

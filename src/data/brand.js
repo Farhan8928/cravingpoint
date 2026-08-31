@@ -14,7 +14,10 @@ export const BRAND = {
   name: 'Craving Point',
   suffix: '.88',
   full: 'Craving Point .88',
-  tagline: 'The Art of Indulgence',
+  // Was 'The Art of Indulgence'. A vague aspirational line that could sit on
+  // any dessert brand on earth is the textbook generated-copy tell; this one
+  // says something only this shop can say.
+  tagline: 'Made when you ask, not before',
   description:
     'Brownies, waffles and charcoal wraps in Cheeta Camp, Trombay. Made when you ask, not before.',
 
@@ -43,8 +46,8 @@ export const BRAND = {
     'https://www.google.com/maps/dir//Craving+Point,+SHOP+NO.+29,+F-SECTOR,+Cheeta+Camp+Rd,+near+Noor+Masjid,+Cheeta+Camp,+Trombay,+Mumbai,+Maharashtra+400088/@19.0394646,72.9470021,17z/data=!4m8!4m7!1m0!1m5!1m1!1s0x3be7c5935772838b:0x126007ebe0ae162e!2m2!1d72.9470021!2d19.0394646',
 
   hours: [
-    { days: 'Monday — Thursday', time: '12:00 — 23:30' },
-    { days: 'Friday — Sunday', time: '12:00 — 01:00' },
+    { days: 'Monday to Thursday', time: '12:00 – 23:30' },
+    { days: 'Friday to Sunday', time: '12:00 – 01:00' },
   ],
 
   social: [

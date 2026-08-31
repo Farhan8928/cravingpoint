@@ -425,6 +425,76 @@ of a freshly loaded page cannot see either.
 
 It runs at **1920×1080**, the width the client reviews at.
 
+---
+
+## Why sites look AI-made, and what was changed here
+
+Researched against [925studios](https://www.925studios.co/blog/ai-slop-web-design-guide),
+[sikora.software](https://sikora.software/blog/ai-website-design) and
+[Forbes](https://www.forbes.com/sites/jodiecook/2026/05/21/15-new-giveaway-signs-of-ai-writing-may-2026-update/),
+then audited honestly against this build. Several tells were ours.
+
+| Tell | Status here |
+|---|---|
+| Inter as the default typeface | **was ours** — body was Inter Tight. Now Instrument Sans |
+| Purple/indigo-to-violet gradient | never — cacao → ember → rosé |
+| Vague aspirational tagline | **was ours** — "The Art of Indulgence". Now "Made when you ask, not before" |
+| Every section an identical block | **was ours** — see below |
+| Excessive em dashes in prose | **was ours** — 68 occurrences, now only where typographically correct |
+| AI-generated imagery | **was ours** — see below |
+| Decorative filler stats | **was ours** — ".88 / the house number" was data-shaped decoration |
+| Uniform padding on every band | **was ours** — every section was `py-section` |
+| Big empty quarters on wide screens | **was ours** — the manifesto had a dead lower-left |
+| Emoji used as icons | never |
+| Generic testimonial names | never — there are no testimonials |
+| Left-border gradient cards | never |
+| Missing micro-interactions | never |
+
+### The footage was the biggest one
+
+The hero reel is a cut-together video. A scene-cut pass over it — consecutive-frame
+difference on a 32×18 greyscale downsample — finds its last cut at **frame ~540**.
+Everything before is real commercial food footage. Everything after is a single
+**AI-generated** wide shot of a dessert table: impossible symmetry, steam that
+resolves into nothing, an oil bottle no dessert counter owns.
+
+The client flagged exactly that look on the gifting section without knowing it
+came from their own reel. `scripts/process-frames.mjs` now stops the hero at
+frame **532**, so the sequence ends on the real brownies-into-chocolate splash —
+genuine, and a stronger final frame than the table ever was. Hero went 281 → 247
+frames and the payload 19 MB → 16.7 MB.
+
+The grill reel was checked the same way: cuts at ~55–65 only, real footage
+throughout. Nothing trimmed.
+
+### The structural one
+
+Every section opened with the identical scaffold: `01 — Label` + hairline rule +
+display headline. Five in a row. The numbering in particular makes a page read as
+a generated outline rather than as something authored. Each section now enters
+differently:
+
+- **Manifesto** — no label at all, opens cold on the headline
+- **Collection** — the counter switch *is* the opener, with the label riding on it
+- **Gifting** — label sits with the headline, no rule
+- **Visit** — the address leads
+- **Craft** — captions carry places ("On the coals") instead of `01 —` `02 —` `03 —`
+
+Vertical rhythm varies too, rather than `py-section` on everything.
+
+### What is still an AI tell, and needs you
+
+Honestly: **the site has almost no people in it.** One hand holding a box, and
+nothing else. No owner, no counter staff, no customers, no founding year, no
+reviews, no story about how the shop started. That absence of specific human fact
+is the deepest version of this problem, and it is the one thing that cannot be
+fixed by design — inventing an owner's name or a fake review would be worse than
+leaving the gap.
+
+What would fix it, in rough order of impact: a photo of whoever runs the counter,
+one sentence in their own words about why the shop exists, the real founding
+year, and two or three genuine customer lines.
+
 ## ⚠ Before this goes live
 
 **1. Photography is placeholder.** All twelve photos are Unsplash stand-ins, not

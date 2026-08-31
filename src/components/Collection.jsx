@@ -51,12 +51,7 @@ export default function Collection() {
   return (
     <section id="collection" className="relative bg-tan py-section">
       <div className="mx-auto max-w-container px-gutter">
-        <Reveal className="mb-14 flex items-baseline gap-6">
-          <span className="eyebrow">02 — The counter</span>
-          <span className="rule flex-1" />
-        </Reveal>
-
-        <div className="mb-14 grid gap-10 md:grid-cols-12 md:items-end">
+        <div className="mb-12 grid gap-10 md:grid-cols-12 md:items-end">
           <SplitLines
             as="h2"
             className="font-display text-display-lg text-ink md:col-span-7"
@@ -69,7 +64,14 @@ export default function Collection() {
 
         {/* Real buttons with aria-selected rather than styled divs, so the
             control is operable from the keyboard as a tablist. */}
-        <div role="tablist" aria-label="Menu counters" className="mb-10 flex flex-wrap gap-2">
+        {/* The counter switch is this section's opener. A label and a rule
+            above it would just be a second, weaker heading. */}
+        <div
+          role="tablist"
+          aria-label="Menu counters"
+          className="mb-10 flex flex-wrap items-center gap-2 border-t border-line pt-6"
+        >
+          <span className="mr-4 font-mono text-label-sm uppercase text-muted">Counter</span>
           {COLLECTIONS.map((c) => {
             const selected = c.id === active;
             return (
@@ -194,7 +196,7 @@ export default function Collection() {
           <a href={BRAND.whatsapp} target="_blank" rel="noopener noreferrer" data-cursor-label="WhatsApp" className="btn-primary">
             Order on WhatsApp
           </a>
-          <p className="text-sm text-muted">Prices are indicative — confirm at the counter.</p>
+          <p className="text-sm text-muted">Prices are indicative. Confirm at the counter.</p>
         </Reveal>
       </div>
     </section>

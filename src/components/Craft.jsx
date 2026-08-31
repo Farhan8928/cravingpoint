@@ -19,17 +19,17 @@ import FrameSequence from './FrameSequence';
  */
 const BEATS = [
   {
-    step: '01',
+    label: 'On the coals',
     title: 'Charcoal first',
     body: 'Thigh meat, marinated overnight, marked hard over open flame before anything else touches it.',
   },
   {
-    step: '02',
+    label: 'Off the chill',
     title: 'Built cold, served hot',
     body: 'Red onion, cucumber ribbons and tomato go on straight from the chill so the wrap keeps its snap.',
   },
   {
-    step: '03',
+    label: 'On the tawa',
     title: 'Folded to order',
     body: 'Rolled tight, pressed on the tawa, cut and out. Ninety seconds from the pass to your hand.',
   },
@@ -113,7 +113,7 @@ export default function Craft() {
         <div className={`relative h-full ${reduced ? 'flex flex-col justify-center gap-8' : ''}`}>
           {BEATS.map((beat) => (
             <div
-              key={beat.step}
+              key={beat.label}
               data-beat
               // Only one caption shows at a time, so stacking them removes the
               // dead space the hidden two would reserve — and it pins the
@@ -126,7 +126,7 @@ export default function Craft() {
               }
               style={{ opacity: 0 }}
             >
-              <span className="eyebrow block !text-film-accent">{beat.step} — The Grill</span>
+              <span className="eyebrow block !text-film-accent">{beat.label}</span>
               <h3
                 className={`mt-4 font-display text-film-ink ${
                   reduced ? 'text-headline' : 'md:mt-6 md:text-display-md text-headline'

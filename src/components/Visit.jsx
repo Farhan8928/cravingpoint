@@ -23,11 +23,6 @@ export default function Visit() {
   return (
     <section id="visit" className="bg-ground py-section">
       <div className="mx-auto max-w-container px-gutter">
-        <Reveal className="mb-14 flex items-baseline gap-6">
-          <span className="eyebrow">05 — Come in</span>
-          <span className="rule flex-1" />
-        </Reveal>
-
         <div className="grid gap-14 md:grid-cols-12">
           <div className="md:col-span-5">
             <SplitLines

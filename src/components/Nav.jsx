@@ -103,7 +103,7 @@ export default function Nav() {
           {/* Open/closed is computed from real hours, so the rail is never
               confidently wrong about whether you can walk in. */}
           <span className={`hidden shrink-0 font-mono text-label-sm uppercase md:block ${railText}`}>
-            {openNow() ? '● Open now' : '○ Closed'} — 12:00 till late
+            {openNow() ? '● Open now' : '○ Closed'} · 12:00 till late
           </span>
 
           <span aria-hidden="true" className={`hidden h-px flex-1 md:block ${railLine}`} />

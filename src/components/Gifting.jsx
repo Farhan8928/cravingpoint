@@ -27,13 +27,11 @@ export default function Gifting() {
   return (
     <section id="gifting" className="block-ember overflow-hidden py-section">
       <div className="mx-auto max-w-container px-gutter">
-        <Reveal className="mb-14 flex items-baseline gap-6">
-          <span className="eyebrow">04 — Bulk &amp; corporate</span>
-          <span className="rule flex-1" />
-        </Reveal>
-
         <div className="grid items-center gap-12 md:grid-cols-12 md:gap-16">
           <div className="md:col-span-5">
+            <Reveal className="mb-5">
+              <span className="eyebrow">Bulk &amp; corporate</span>
+            </Reveal>
             <SplitLines
               as="h2"
               className="font-display text-display-md text-ink"
