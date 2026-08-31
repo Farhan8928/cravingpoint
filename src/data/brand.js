@@ -51,7 +51,7 @@ export const BRAND = {
   ],
 
   social: [
-    { label: 'Instagram', href: 'https://instagram.com/' },
+    { label: 'Instagram', href: 'https://www.instagram.com/cravingpoint88/' },
     { label: 'WhatsApp', href: 'https://wa.me/919819940231' },
   ],
 
