@@ -8,8 +8,10 @@
     "dev": "vite",
     "build": "vite build && npm run build:ssr && node scripts/prerender.mjs",
     "preview": "vite preview --port 4173",
-    "assets": "node scripts/process-frames.mjs",
-    "build:ssr": "vite build --ssr src/entry-server.jsx --outDir dist-ssr"
+    "assets": "node scripts/process-frames.mjs && node scripts/process-images.mjs",
+    "build:ssr": "vite build --ssr src/entry-server.jsx --outDir dist-ssr",
+    "assets:frames": "node scripts/process-frames.mjs",
+    "assets:images": "node scripts/process-images.mjs"
   },
   "dependencies": {
     "gsap": "^3.12.5",

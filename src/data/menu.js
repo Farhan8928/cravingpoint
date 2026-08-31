@@ -1,11 +1,13 @@
 /**
  * The menu, split by counter rather than by course.
  *
- * `still` names an asset emitted by scripts/process-frames.mjs — the product
- * photography on this site is pulled straight out of the two film sequences, so
- * the cards and the scroll footage are literally the same shoot. Cards without
- * a still fall back to a typographic treatment rather than a stock placeholder;
- * a wrong photo of a dessert is worse than no photo.
+ * `image` names an asset emitted by scripts/process-images.mjs. Every item has
+ * one — that is what lets the Collection section be a real editorial layout
+ * instead of a list with a few photographs floating over it.
+ *
+ * ⚠ The dish photography is currently Unsplash placeholder, not Craving Point's
+ * own food. See CREDITS.md. Swapping it is a one-line change per dish in
+ * scripts/process-images.mjs; nothing here needs to move.
  *
  * ⚠ Prices are illustrative. Confirm against the current counter menu.
  */
@@ -22,42 +24,42 @@ export const COLLECTIONS = [
         note: 'Molten dark chocolate, Atlantic sea salt, served warm',
         price: '₹280',
         tags: ['Signature'],
-        still: 'still-pour',
+        image: 'dish-brownie',
       },
       {
         name: 'Belgian Waffle Cup',
         note: 'Waffle bites, brownie chunk, hand-poured couverture',
         price: '₹320',
         tags: ['Bestseller'],
-        still: 'still-spread',
+        image: 'dish-waffle',
       },
       {
         name: 'Molten Chocolate Jar',
         note: 'Layered ganache and sponge, taken to the table still warm',
         price: '₹300',
         tags: [],
-        still: null,
+        image: 'dish-molten-jar',
       },
       {
         name: 'Vanilla Bean Sundae',
         note: 'Madagascar vanilla, dark chocolate ribbon, candied pecan',
         price: '₹260',
         tags: [],
-        still: null,
+        image: 'dish-sundae',
       },
       {
         name: 'Buttermilk Pancake Stack',
         note: 'Four high, maple butter, seasonal fruit',
         price: '₹290',
         tags: [],
-        still: null,
+        image: 'dish-pancakes',
       },
       {
         name: 'Gold Leaf Petit Fours',
         note: 'Delicate chocolate ganache, 24k gold leaf — by order',
         price: '₹640',
         tags: ['Limited'],
-        still: null,
+        image: 'dish-petitfours',
       },
     ],
   },
@@ -73,44 +75,39 @@ export const COLLECTIONS = [
         note: 'Charcoal-grilled thigh, red onion, cucumber, house sauce',
         price: '₹260',
         tags: ['Signature'],
-        still: 'still-wrap',
+        image: 'dish-wrap',
       },
       {
         name: 'Peri Peri Grill Wrap',
         note: 'Double-marinated, finished on the flame',
         price: '₹280',
         tags: ['Hot'],
-        still: 'still-grill',
+        image: 'dish-periperi',
       },
       {
         name: 'Cheese Melt Wrap',
         note: 'Three cheeses, caramelised onion, pressed till it gives',
         price: '₹250',
         tags: [],
-        still: null,
+        image: 'dish-cheesemelt',
       },
       {
         name: 'Loaded Fries',
         note: 'Grill trimmings, molten cheese, house seasoning',
         price: '₹220',
         tags: [],
-        still: null,
+        image: 'dish-fries',
       },
     ],
   },
 ];
-
-/** The three cards that carry the Collection section. Kept short on purpose. */
-export const SIGNATURES = COLLECTIONS.flatMap((c) => c.items)
-  .filter((i) => i.still)
-  .slice(0, 4);
 
 /** Words for the infinite marquee between acts. */
 export const MARQUEE_WORDS = [
   'Hand-poured chocolate',
   'Charcoal grill',
   'Made to order',
-  'Trombay, Mumbai',
+  'Cheeta Camp, Trombay',
   'Open till late',
   'Bulk & corporate gifting',
 ];

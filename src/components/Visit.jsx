@@ -16,9 +16,9 @@ import { Magnetic } from './Cursor';
  */
 export default function Visit() {
   const { address, hours } = BRAND;
-  const mapQuery = encodeURIComponent(
-    `${BRAND.full}, ${address.line1}, ${address.line2}, ${address.region}`
-  );
+  // Prefer the real Google listing link over a text search — a search for a
+  // café name in Mumbai can and does resolve onto the wrong pin.
+  const directions = BRAND.mapsDirections;
 
   return (
     <section id="visit" className="bg-ground py-section">
@@ -43,6 +43,8 @@ export default function Visit() {
                   {address.line1}
                   <br />
                   {address.line2}
+                  <br />
+                  {address.line3}
                   <br />
                   {address.region}
                 </address>
@@ -72,7 +74,7 @@ export default function Visit() {
                   </a>
                 </Magnetic>
                 <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`}
+                  href={directions}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-ghost"
@@ -95,18 +97,27 @@ export default function Visit() {
                 />
               ) : (
                 <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`}
+                  href={directions}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex h-full w-full flex-col items-center justify-center gap-3 text-center transition-colors duration-500 hover:bg-line/40"
                 >
                   <span className="font-display text-2xl text-ink">
-                    {address.line1}, {address.line2}
+                    {address.line3}
                   </span>
                   <span className="eyebrow">Open in Google Maps →</span>
                 </a>
               )}
             </div>
+
+            <a
+              href={directions}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-block text-label-sm uppercase text-muted transition-colors hover:text-accent"
+            >
+              Open in Google Maps →
+            </a>
           </Reveal>
         </div>
       </div>

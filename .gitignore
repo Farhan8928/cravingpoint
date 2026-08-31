@@ -11,3 +11,6 @@ dist-ssr
 # `npm run assets:frames`. ~20 MB of WebP that git has no business tracking —
 # regenerate them rather than committing them.
 public/frames
+
+# Downloaded placeholder photography — regenerate with npm run assets:images
+.cache

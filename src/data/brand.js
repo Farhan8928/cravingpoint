@@ -25,11 +25,22 @@ export const BRAND = {
   email: 'hello@cravingpoint.example',
 
   address: {
-    line1: 'Chembur Camp',
-    line2: 'Trombay, Mumbai',
+    line1: 'Shop No. 29, F-Sector',
+    line2: 'Cheeta Camp Road, near Noor Masjid',
+    line3: 'Cheeta Camp, Trombay, Mumbai',
     region: 'Maharashtra 400088',
     country: 'IN',
   },
+
+  /**
+   * Straight from the Google Maps listing, so directions and the embed both
+   * resolve to the real pin rather than to a text search that can drift onto a
+   * similarly-named place.
+   */
+  geo: { lat: 19.0394646, lng: 72.9470021 },
+  mapsPlaceId: '0x3be7c5935772838b:0x126007ebe0ae162e',
+  mapsDirections:
+    'https://www.google.com/maps/dir//Craving+Point,+SHOP+NO.+29,+F-SECTOR,+Cheeta+Camp+Rd,+near+Noor+Masjid,+Cheeta+Camp,+Trombay,+Mumbai,+Maharashtra+400088/@19.0394646,72.9470021,17z/data=!4m8!4m7!1m0!1m5!1m1!1s0x3be7c5935772838b:0x126007ebe0ae162e!2m2!1d72.9470021!2d19.0394646',
 
   hours: [
     { days: 'Monday — Thursday', time: '12:00 — 23:30' },
@@ -41,8 +52,13 @@ export const BRAND = {
     { label: 'WhatsApp', href: 'https://wa.me/919999999999' },
   ],
 
-  // ⚠ PLACEHOLDER — paste the embed URL from Google Maps → Share → Embed.
-  mapEmbed: '',
+  /**
+   * The classic `/maps?q=...&output=embed` form takes coordinates directly and
+   * needs no API key, so the map works on first deploy. Swap in a Maps
+   * Embed API URL later if you want the branded pin and Street View controls.
+   */
+  mapEmbed:
+    'https://www.google.com/maps?q=19.0394646,72.9470021&z=16&hl=en&output=embed',
 };
 
 export const NAV = [

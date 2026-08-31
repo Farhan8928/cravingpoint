@@ -1,6 +1,6 @@
 # Craving Point .88
 
-Official website for **Craving Point .88** — a dessert atelier and grill in Chembur Camp, Trombay, Mumbai.
+Official website for **Craving Point .88** — a dessert atelier and grill at Shop No. 29, F-Sector, Cheeta Camp Road, Trombay, Mumbai.
 
 A single scroll-driven page built around two film sequences scrubbed frame-by-frame on canvas: a chocolate pour over the signature spread, and a chicken wrap built to order on the grill.
 
@@ -51,15 +51,22 @@ flash of bone paper. Its storage key and default are mirrored in `src/lib/theme.
 
 ```bash
 npm install
-npm run assets     # PNG masters -> WebP frame sequences (see below)
+npm run assets     # frame sequences + dish photography (see below)
 npm run dev        # http://localhost:5173
 npm run build      # -> dist/, prerendered
 npm run preview    # serve dist/ on :4173
 ```
 
-`npm run assets` must run once before `dev` or `build`. It is the only step that
-touches the raw footage, and its output (`public/frames/`, `src/data/sequences.js`)
-is gitignored — regenerate rather than commit ~19 MB of WebP.
+`npm run assets` must run once before `dev` or `build`. It is two steps and each
+can be run alone:
+
+| script | does | writes |
+|---|---|---|
+| `npm run assets:frames` | 547 MB of PNG masters → WebP scroll sequences | `public/frames/`, `src/data/sequences.js` |
+| `npm run assets:images` | downloads + crops the dish photography | `public/images/dish-*`, `src/data/alts.js`, `CREDITS.md` |
+
+Both outputs are gitignored — regenerate rather than commit ~19 MB of WebP.
+Downloads are cached in `.cache/photos/`, so re-runs are free and work offline.
 
 ---
 
@@ -165,6 +172,7 @@ and the grain is static.
 index.html            document shell, meta, JSON-LD, no-JS fallback
 scripts/
   process-frames.mjs  PNG masters -> WebP sequences + stills + manifest
+  process-images.mjs  dish photography -> 4:5 WebP sets + alts + CREDITS.md
   prerender.mjs       bakes rendered markup into dist/index.html
 src/
   main.jsx            hydrate (prod) / render (dev)
@@ -180,6 +188,23 @@ src/
     brand.js          ⚠ contact details — see below
     menu.js           the two counters
     sequences.js      AUTO-GENERATED — do not edit
+    alts.js           AUTO-GENERATED — do not edit
+
+### The Collection section
+
+Worth naming because the first version was wrong. It floated a raw film frame
+under the cursor, which read as a bug: an unstyled rectangle covering the row you
+were trying to read. The problem was the *pattern*, not the polish — a
+cursor-following image has nowhere to be, so it always lands on top of content.
+
+It is now a list with the photograph in its own column: a sticky framed panel
+that crossfades as you move down, holding the last hovered dish rather than
+snapping to empty. All frames are stacked and crossfaded on opacity rather than
+swapped by `src`, because swapping means a decode on every hover and that shows
+as a flash of empty panel.
+
+Below `lg` there is no hover to drive it, so the panel is dropped and each row
+carries its own thumbnail — same content, honest to the input.
 ```
 
 ### Prerendering
@@ -220,18 +245,27 @@ A render under 5 000 characters fails the build rather than shipping a blank pag
 
 ## ⚠ Before this goes live
 
-The source prototypes contained **no real contact details**. Everything below is
-a placeholder in [`src/data/brand.js`](src/data/brand.js):
+**1. Dish photography is placeholder.** All ten dish photos are Unsplash
+stand-ins, not Craving Point's food — see [CREDITS.md](CREDITS.md). Swapping one
+is a single entry in [`scripts/process-images.mjs`](scripts/process-images.mjs);
+nothing in the components or the menu data moves.
+
+**2. Contact details are placeholder.** The source prototypes had none. In
+[`src/data/brand.js`](src/data/brand.js):
 
 - `phone` / `phoneDisplay` — currently `+91 99999 99999`
 - `whatsapp` — currently `wa.me/919999999999`
 - `email`, `social[]` links
-- `mapEmbed` — empty, so the Visit section falls back to a Maps link rather than
-  rendering a broken embed. Paste the URL from Google Maps → Share → Embed.
 - `canonical` and `og:url` in `index.html` point at `cravingpoint.example`
 
-Also confirm: **prices in [`src/data/menu.js`](src/data/menu.js) are illustrative**,
-and the hours and "Est. 2024" line in the hero.
+The **address, coordinates and map are real** — Shop No. 29, F-Sector, Cheeta
+Camp Road, near Noor Masjid, Cheeta Camp, Trombay, Mumbai 400088
+(`19.0394646, 72.9470021`). The embed is the keyless `maps?q=lat,lng&output=embed`
+form so it works on first deploy; swap in a Maps Embed API URL if you want the
+branded pin.
+
+**3. Confirm the copy.** Prices in [`src/data/menu.js`](src/data/menu.js) are
+illustrative, as are the opening hours.
 
 ---
 

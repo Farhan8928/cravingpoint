@@ -1,31 +1,40 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap, prefersReducedMotion } from '../lib/motion';
 import { COLLECTIONS } from '../data/menu';
+import { ALTS } from '../data/alts';
 import { BRAND } from '../data/brand';
 import { SplitLines, Reveal } from './Reveal';
 import Img from './Img';
 
 /**
- * The menu, as two switchable counters.
+ * The menu: a list on the left, one large photograph on the right.
  *
- * A tab pattern rather than two stacked lists: sweet and hot are genuinely
- * alternatives — nobody scrolls the desserts to reach the wraps — and stacking
- * them would put ten rows of text between the hero and the visit details. The
- * inactive panel is unmounted, so the DOM only holds the menu that was asked for.
+ * The previous version floated a raw film frame under the cursor. It read as a
+ * bug — an unstyled rectangle covering the row you were trying to read, cropped
+ * at whatever aspect the frame happened to be. The problem was not the polish,
+ * it was the pattern: a cursor-following image has nowhere to *be*, so it always
+ * lands on top of content.
  *
- * Rows, not cards. Only four items have photography (the stills pulled from the
- * two films); a card grid would leave six holes wanting stock imagery, and stock
- * food photography is the fastest way to make a real kitchen look fake. So the
- * list is typographic, and the photographed items get a hover preview that
- * follows the cursor — the images are a reward for exploring, not a grid to fill.
+ * Giving the image its own column fixes that. It is a sticky, framed panel that
+ * crossfades as you move down the list, and it holds the last hovered dish
+ * rather than snapping to empty — so it behaves like a viewfinder onto the menu
+ * instead of a tooltip.
+ *
+ * On touch there is no hover to drive it, so the panel is dropped entirely and
+ * each row carries its own thumbnail. Same content, honest to the input.
  */
 export default function Collection() {
   const [active, setActive] = useState(COLLECTIONS[0].id);
   const collection = COLLECTIONS.find((c) => c.id === active);
 
   const listRef = useRef(null);
-  const previewRef = useRef(null);
-  const [hovered, setHovered] = useState(null);
+  // Index rather than the item itself, so switching counters resets cleanly.
+  const [focused, setFocused] = useState(0);
+  const item = collection.items[focused] ?? collection.items[0];
+
+  useEffect(() => {
+    setFocused(0);
+  }, [active]);
 
   // Rows stagger in whenever the active counter changes.
   useEffect(() => {
@@ -33,38 +42,11 @@ export default function Collection() {
     if (!el || prefersReducedMotion()) return undefined;
     const tween = gsap.fromTo(
       el.querySelectorAll('[data-row]'),
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.65, stagger: 0.045, ease: 'power3.out' }
+      { opacity: 0, y: 18 },
+      { opacity: 1, y: 0, duration: 0.6, stagger: 0.04, ease: 'power3.out' }
     );
     return () => tween.kill();
   }, [active]);
-
-  // The floating preview tracks the pointer with a lag, like the cursor ring.
-  useEffect(() => {
-    const el = previewRef.current;
-    if (!el || prefersReducedMotion()) return undefined;
-    if (!window.matchMedia('(pointer: fine)').matches) return undefined;
-
-    const xTo = gsap.quickTo(el, 'x', { duration: 0.65, ease: 'power3' });
-    const yTo = gsap.quickTo(el, 'y', { duration: 0.65, ease: 'power3' });
-    const onMove = (e) => {
-      xTo(e.clientX + 28);
-      yTo(e.clientY - 130);
-    };
-    window.addEventListener('mousemove', onMove, { passive: true });
-    return () => window.removeEventListener('mousemove', onMove);
-  }, []);
-
-  useEffect(() => {
-    const el = previewRef.current;
-    if (!el || prefersReducedMotion()) return;
-    gsap.to(el, {
-      opacity: hovered ? 1 : 0,
-      scale: hovered ? 1 : 0.94,
-      duration: 0.45,
-      ease: 'power3.out',
-    });
-  }, [hovered]);
 
   return (
     <section id="collection" className="relative bg-ground py-section">
@@ -112,71 +94,107 @@ export default function Collection() {
         </div>
 
         <div
-          ref={listRef}
           role="tabpanel"
           id={`panel-${collection.id}`}
           aria-labelledby={`tab-${collection.id}`}
-          className="border-t border-line"
+          className="grid gap-10 lg:grid-cols-12 lg:gap-14"
         >
-          {collection.items.map((item) => (
-            <article
-              key={item.name}
-              data-row
-              data-cursor={item.still ? 'grow' : undefined}
-              onMouseEnter={() => item.still && setHovered(item)}
-              onMouseLeave={() => setHovered(null)}
-              className="group grid grid-cols-12 items-baseline gap-4 border-b border-line py-6 transition-colors duration-500 ease-lux hover:bg-sunken/60 md:py-7"
-            >
-              <h3 className="col-span-9 font-display text-2xl text-ink transition-transform duration-500 ease-lux group-hover:translate-x-2 md:col-span-5 md:text-3xl">
-                {item.name}
-              </h3>
+          <div ref={listRef} className="border-t border-line lg:col-span-7">
+            {collection.items.map((entry, i) => (
+              <article
+                key={entry.name}
+                data-row
+                onMouseEnter={() => setFocused(i)}
+                // Keyboard users move through the rows too, so focus drives the
+                // panel exactly as hover does.
+                onFocus={() => setFocused(i)}
+                tabIndex={0}
+                className={`group flex cursor-default items-center gap-5 border-b border-line py-5 transition-colors duration-500 ease-lux md:py-6 ${
+                  focused === i ? 'lg:bg-sunken/50' : ''
+                }`}
+              >
+                {/* Thumbnail carries the photography on touch and narrow
+                    screens, where the sticky panel is hidden. */}
+                <div className="h-16 w-16 shrink-0 overflow-hidden bg-sunken lg:hidden">
+                  <Img
+                    slug={entry.image}
+                    alt={ALTS[entry.image] ?? ''}
+                    width={480}
+                    height={600}
+                    max={480}
+                    sizes="64px"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
 
-              <p className="order-3 col-span-12 text-sm text-muted md:order-none md:col-span-5">
-                {item.note}
-              </p>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-baseline justify-between gap-4">
+                    <h3 className="font-display text-xl text-ink transition-transform duration-500 ease-lux group-hover:translate-x-1.5 md:text-2xl">
+                      {entry.name}
+                    </h3>
+                    <span className="shrink-0 font-display text-lg text-ink md:text-xl">
+                      {entry.price}
+                    </span>
+                  </div>
+                  <div className="mt-1.5 flex items-center gap-3">
+                    <p className="text-sm text-muted">{entry.note}</p>
+                    {entry.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="hidden shrink-0 border border-accent/40 px-2 py-0.5 text-label-sm uppercase text-accent xl:inline-block"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
 
-              <div className="col-span-3 flex items-center justify-end gap-4 md:col-span-2">
-                {item.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="hidden border border-accent/40 px-2.5 py-1 text-label-sm uppercase text-accent lg:inline-block"
-                  >
-                    {tag}
-                  </span>
+          {/* The viewfinder. Hidden below lg, where there is no hover to drive
+              it and the row thumbnails do the job instead. */}
+          <div className="hidden lg:col-span-5 lg:block">
+            <div className="sticky top-28">
+              <div className="relative aspect-[4/5] w-full overflow-hidden bg-sunken shadow-frame">
+                {collection.items.map((entry, i) => (
+                  <Img
+                    key={entry.image}
+                    slug={entry.image}
+                    alt={ALTS[entry.image] ?? ''}
+                    width={1000}
+                    height={1250}
+                    max={1200}
+                    sizes="(min-width: 1024px) 40vw, 100vw"
+                    // All frames are stacked and crossfaded on opacity rather
+                    // than swapped by src — swapping means a decode on every
+                    // hover, which shows as a flash of empty panel.
+                    className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-lux ${
+                      focused === i ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    // Only the first is eager; the rest load as the list is used.
+                    priority={i === 0}
+                  />
                 ))}
-                <span className="font-display text-xl text-ink">{item.price}</span>
               </div>
-            </article>
-          ))}
+
+              <div className="mt-5 flex items-baseline justify-between gap-4 border-t border-line pt-4">
+                <div>
+                  <h3 className="font-display text-2xl text-ink">{item.name}</h3>
+                  <p className="mt-1 text-sm text-muted">{item.note}</p>
+                </div>
+                <span className="shrink-0 font-display text-2xl text-accent">{item.price}</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <Reveal className="mt-12 flex flex-wrap items-center gap-6" delay={0.1}>
+        <Reveal className="mt-14 flex flex-wrap items-center gap-6" delay={0.1}>
           <a href={BRAND.whatsapp} target="_blank" rel="noopener noreferrer" className="btn-primary">
             Order on WhatsApp
           </a>
           <p className="text-sm text-muted">Prices are indicative — confirm at the counter.</p>
         </Reveal>
-      </div>
-
-      {/* The hover preview. Fixed, pointer-events-none, hidden from AT — the row
-          text is the accessible content; this is decoration on top of it. */}
-      <div
-        ref={previewRef}
-        aria-hidden="true"
-        className="pointer-events-none fixed left-0 top-0 z-40 hidden h-60 w-80 overflow-hidden shadow-frame md:block"
-        style={{ opacity: 0 }}
-      >
-        {hovered?.still && (
-          <Img
-            slug={hovered.still}
-            alt=""
-            width={800}
-            height={450}
-            max={800}
-            sizes="320px"
-            className="h-full w-full object-cover"
-          />
-        )}
       </div>
     </section>
   );

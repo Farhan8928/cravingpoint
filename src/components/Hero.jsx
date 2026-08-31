@@ -72,7 +72,7 @@ export default function Hero({ onProgress }) {
       >
         <div className="mx-auto w-full max-w-container">
           <span data-fade className="eyebrow block translate-y-4 !text-film-accent opacity-0">
-            Chembur Camp · Trombay · Mumbai
+            Cheeta Camp · Trombay · Mumbai
           </span>
 
           {/* Left-aligned and bottom-set rather than centred. A centred stack
