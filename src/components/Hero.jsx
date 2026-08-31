@@ -101,7 +101,8 @@ export default function Hero({ onProgress }) {
                     e.preventDefault();
                     scrollTo('#collection', { offset: -80 });
                   }}
-                  className="btn bg-film-ink text-film-ground hover:bg-accent hover:text-accent-ink"
+                  data-cursor-label="Menu"
+                  className="btn rounded-full bg-film-ink text-film-ground transition-colors hover:bg-white"
                 >
                   See the counter
                 </a>
@@ -117,7 +118,7 @@ export default function Hero({ onProgress }) {
         aria-hidden="true"
         className="absolute bottom-8 right-gutter hidden flex-col items-center gap-3 md:flex"
       >
-        <span className="text-label-sm uppercase text-film-muted">Scroll</span>
+        <span className="font-mono text-label-sm uppercase text-film-muted">Scroll</span>
         <span className="relative block h-12 w-px overflow-hidden bg-film-ink/20">
           <span className="absolute inset-x-0 top-0 h-1/2 animate-drip bg-film-accent" />
         </span>

@@ -26,9 +26,71 @@ Every one pairs a warm light ground with a single distinctive non-metallic
 colour. Light is the default here for the same reason: dark, warm food
 photography reads best framed on paper.
 
-Type is **Fraunces** (variable serif with an optical-size axis, so the display cut
-can be genuinely high-contrast while small sizes stay sturdy) over **Inter Tight**.
-Playfair Display set at 14px is one of the clearest tells of a template.
+### The signature gradient
+
+Pulling Sunbeam's actual stylesheet was more useful than looking at it. Its
+character comes from three things, and the biggest is not visual:
+
+| Signal | Sunbeam | Here |
+|---|---|---|
+| **Monospace UI layer** | `forma-djr-mono` — **40 uses**, most-used font on the site | Martian Mono |
+| **One gradient, re-angled** | `102deg, #f72f23 → #ffa344 → #c3abc6`, also at 0/154/175/180deg | `--g1/--g2/--g3`, four angle utilities |
+| **Heavy display face, headlines only** | `Belgard, Impact` | Fraunces |
+
+Ours is `#7e2a14 → #c9512c → #be8fa0` — cacao, ember, and a cool dusty rosé.
+**The third stop is the point.** Cacao and ember are the obvious warm pair; the
+rosé is what stops it reading as a generic warm gradient, and cocoa genuinely
+carries red-fruit notes so it is on-brand as well as unexpected. The stops are
+declared bare so the same three colours re-angle per element — angle changes,
+identity doesn't. That reuse is what makes a gradient read as a brand asset
+rather than decoration.
+
+It appears on exactly four things: the floating nav pill, the primary CTA, the
+theme toggle thumb, and the cursor. Everywhere else the accent is flat. A
+gradient that is everywhere is a texture; a gradient that is rare is a signal.
+
+### Type: three roles
+
+- **Fraunces** — display only. A variable serif with an optical-size axis, so the
+  display cut is genuinely high-contrast while small sizes stay sturdy.
+  (Playfair at 14px is the clearest tell of a template.)
+- **Martian Mono** — the entire UI layer: labels, nav, buttons, prices, stats.
+  This is the single biggest reason the page reads as designed rather than
+  assembled. It is a wide face, so the label tracking came down from
+  0.18em/0.22em to 0.06em/0.08em — the old values were tuned for Inter and read
+  as broken-apart lettering in mono.
+- **Inter Tight** — body copy only, where mono would be a readability tax.
+
+### The header
+
+Two pieces, mirroring the reference structure without copying it. A **top rail**
+— open/closed status left, wordmark centred between hairlines, place right —
+which reads as signage rather than app chrome; the first thing a shop tells you
+is whether it is open, so that status is computed from the real hours. And a
+**floating gradient pill nav**, bottom-centre, which fades in once you are past
+the hero and is the one persistent element always showing the brand colour.
+
+### The cursor
+
+A drop of chocolate. It carries the gradient and **squashes and stretches along
+its direction of travel** — moving fast pulls it into a teardrop, stopping lets
+it settle back into a round drop. On a site whose hero is chocolate being poured,
+that is the one cursor that could only belong here.
+
+The physics is cheap on purpose: velocity is just the gap between the pointer and
+the blob's own lagging position — no event timing, no history buffer — driving
+rotation, `scaleX`, and an inverse `scaleY`. Conserving volume that way is what
+makes it read as liquid instead of as a circle being scaled.
+
+It also **carries a label**. Anything with `data-cursor-label` expands the blob
+into a pill showing that word — `Order`, `Switch`, `Maps`, and on menu rows the
+dish's price. That is the part that earns its place: an affordance, not an
+effect. (First attempt labelled rows with the last word of the dish name, which
+produced `CUP`, `FOURS` and `STACK` — the price is always short and always means
+something.)
+
+Everything is transform-only on a single rAF, so it composites on the GPU and
+never touches layout.
 
 ### Theming
 

@@ -40,8 +40,8 @@ export default function Manifesto() {
                 { n: '01:00', l: 'Weekend close' },
               ].map((stat) => (
                 <div key={stat.l}>
-                  <div className="font-display text-3xl text-accent">{stat.n}</div>
-                  <div className="mt-2 text-label-sm uppercase text-muted">{stat.l}</div>
+                  <div className="num grad-text text-2xl font-medium">{stat.n}</div>
+                  <div className="mt-2 font-mono text-label-sm uppercase text-muted">{stat.l}</div>
                 </div>
               ))}
             </Reveal>

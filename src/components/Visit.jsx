@@ -38,7 +38,7 @@ export default function Visit() {
 
             <Reveal delay={0.1} className="mt-10 space-y-9">
               <div>
-                <h3 className="text-label-sm uppercase text-muted">Address</h3>
+                <h3 className="font-mono text-label-sm uppercase text-muted">Address</h3>
                 <address className="mt-3 text-body-lg not-italic text-ink">
                   {address.line1}
                   <br />
@@ -51,12 +51,12 @@ export default function Visit() {
               </div>
 
               <div>
-                <h3 className="text-label-sm uppercase text-muted">Hours</h3>
+                <h3 className="font-mono text-label-sm uppercase text-muted">Hours</h3>
                 <dl className="mt-3 space-y-2 border-t border-line pt-3">
                   {hours.map((h) => (
                     <div key={h.days} className="flex justify-between gap-6">
                       <dt className="text-ink">{h.days}</dt>
-                      <dd className="tabular-nums text-muted">{h.time}</dd>
+                      <dd className="num text-sm text-muted">{h.time}</dd>
                     </div>
                   ))}
                 </dl>
@@ -68,7 +68,8 @@ export default function Visit() {
                     href={BRAND.whatsapp}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn-primary"
+                    data-cursor-label="WhatsApp"
+                    className="btn-primary rounded-full"
                   >
                     Message on WhatsApp
                   </a>
@@ -77,7 +78,8 @@ export default function Visit() {
                   href={directions}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-ghost"
+                  data-cursor-label="Maps"
+                  className="btn-ghost rounded-full"
                 >
                   Get directions
                 </a>
@@ -114,7 +116,7 @@ export default function Visit() {
               href={directions}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-block text-label-sm uppercase text-muted transition-colors hover:text-accent"
+              className="mt-4 inline-block font-mono text-label-sm uppercase text-muted transition-colors hover:text-accent"
             >
               Open in Google Maps →
             </a>

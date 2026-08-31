@@ -24,7 +24,7 @@ export default function Footer() {
           </div>
 
           <nav aria-label="Footer" className="md:col-span-3 md:col-start-8">
-            <h2 className="text-label-sm uppercase text-muted">Explore</h2>
+            <h2 className="font-mono text-label-sm uppercase text-muted">Explore</h2>
             <ul className="mt-5 space-y-3">
               {NAV.map((item) => (
                 <li key={item.href}>
@@ -44,7 +44,7 @@ export default function Footer() {
           </nav>
 
           <div className="md:col-span-2">
-            <h2 className="text-label-sm uppercase text-muted">Connect</h2>
+            <h2 className="font-mono text-label-sm uppercase text-muted">Connect</h2>
             <ul className="mt-5 space-y-3">
               {BRAND.social.map((s) => (
                 <li key={s.label}>
@@ -84,7 +84,7 @@ export default function Footer() {
           </div>
         </Reveal>
 
-        <div className="flex flex-col items-center justify-between gap-4 border-t border-line py-7 text-sm text-muted sm:flex-row">
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-line py-7 text-sm text-muted sm:flex-row lg:pb-28">
           <p>
             © {year} {BRAND.full}. All rights reserved.
           </p>
@@ -93,7 +93,7 @@ export default function Footer() {
             <button
               type="button"
               onClick={() => scrollTo('#top', { offset: 0 })}
-              className="text-label-sm uppercase transition-colors duration-300 hover:text-accent"
+              className="font-mono text-label-sm uppercase transition-colors duration-300 hover:text-accent"
             >
               Back to top ↑
             </button>

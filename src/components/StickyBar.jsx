@@ -46,7 +46,7 @@ export default function StickyBar() {
       <div className="flex items-center gap-3">
         <a
           href={`tel:${BRAND.phone}`}
-          className="btn-ghost flex-1 !px-4 !py-3"
+          className="btn-ghost flex-1 rounded-full !px-4 !py-3"
           aria-label={`Call ${BRAND.full}`}
         >
           Call
@@ -55,7 +55,7 @@ export default function StickyBar() {
           href={BRAND.whatsapp}
           target="_blank"
           rel="noopener noreferrer"
-          className="btn-primary flex-[2] !px-4 !py-3"
+          className="btn-primary flex-[2] rounded-full !px-4 !py-3"
         >
           Order on WhatsApp
         </a>

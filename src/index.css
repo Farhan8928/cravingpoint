@@ -25,6 +25,23 @@
     --accent-ink: 255 255 255;
     --shadow: 60 42 28;
 
+    /**
+     * The signature gradient.
+     *
+     * Three stops, and the third one is the point. Cacao and ember are the
+     * obvious warm pair; the cool dusty rosé at the end is what stops it reading
+     * as a generic "warm gradient" and gives it a colour you have to have chosen
+     * on purpose. Cocoa genuinely carries red-fruit notes, so it is on-brand as
+     * well as unexpected.
+     *
+     * Declared as bare stops so the same three colours can be re-angled per
+     * element — the angle changes, the identity does not. That reuse is what
+     * makes a gradient read as a brand asset instead of as decoration.
+     */
+    --g1: #7e2a14;
+    --g2: #c9512c;
+    --g3: #be8fa0;
+
     color-scheme: light;
   }
 
@@ -39,6 +56,12 @@
     --accent: 224 102 74;       /* #E0664A  ember */
     --accent-ink: 26 15 10;
     --shadow: 0 0 0;
+
+    /* Lifted, not re-hued — the gradient has to survive on a near-black ground
+       without turning muddy, so each stop gains luminance and keeps its hue. */
+    --g1: #b8431f;
+    --g2: #e0664a;
+    --g3: #d5a7b6;
 
     color-scheme: dark;
   }
@@ -90,10 +113,35 @@
 }
 
 @layer components {
-  /* ---------- Type ---------- */
+  /* ---------- The gradient, as a small vocabulary ----------
+     One identity, re-angled per use. `.grad-102` is the default diagonal;
+     the others exist so a vertical rule and a horizontal pill can carry the
+     same three colours without either looking like a rotation of the other. */
+
+  .grad-102 { background-image: linear-gradient(102deg, var(--g1) 4%, var(--g2) 48%, var(--g3) 94%); }
+  .grad-180 { background-image: linear-gradient(180deg, var(--g1), var(--g2) 52%, var(--g3)); }
+  .grad-154 { background-image: linear-gradient(154deg, var(--g1), var(--g2) 54%, var(--g3)); }
+  .grad-90  { background-image: linear-gradient(90deg, var(--g1) 2%, var(--g2) 50%, var(--g3) 96%); }
+
+  /* Gradient-filled type. Needs a fallback colour first: if the clip is
+     unsupported the text stays readable instead of vanishing. */
+  .grad-text {
+    @apply text-accent;
+    background-image: linear-gradient(102deg, var(--g1) 4%, var(--g2) 48%, var(--g3) 94%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* ---------- Type ----------
+
+     The UI layer is monospace and the editorial layer is not. That split is the
+     single biggest reason the reference sites read as *designed* rather than
+     assembled: every label, price, nav item and button sits on a mono grid,
+     which makes the serif headlines look deliberately placed against it. */
 
   .eyebrow {
-    @apply font-sans text-label uppercase text-accent font-semibold;
+    @apply font-mono text-label uppercase text-accent font-medium;
   }
 
   .lede {
@@ -102,6 +150,12 @@
 
   .rule {
     @apply h-px w-full border-0 bg-line;
+  }
+
+  /* Numerals — prices, counters, stats. Mono keeps columns of ₹ figures
+     aligned without a tabular-nums hack per element. */
+  .num {
+    @apply font-mono tabular-nums;
   }
 
   /* ---------- Reveal primitives ----------
@@ -138,16 +192,23 @@
 
   .btn {
     @apply relative inline-flex items-center justify-center gap-3
-           font-sans text-label uppercase font-semibold
+           font-mono text-label uppercase font-medium
            px-7 py-4
            transition-[background-color,color,border-color] duration-400 ease-lux
            will-change-transform;
   }
 
-  /* Square-ish, not pill. Pills read as generic SaaS; a 6px radius on a wide
-     label reads as print. */
+  /* The primary CTA carries the gradient. It is the one element that always
+     does, which is what makes the gradient legible as "this is the action"
+     rather than as a texture sprayed across the page. */
   .btn-primary {
-    @apply btn bg-accent text-accent-ink hover:bg-ink;
+    @apply btn grad-102 text-white;
+    background-size: 160% 100%;
+    background-position: 0% 50%;
+    transition: background-position 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .btn-primary:hover {
+    background-position: 100% 50%;
   }
 
   .btn-ghost {

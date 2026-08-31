@@ -48,11 +48,19 @@ export default {
         },
       },
       fontFamily: {
-        // Fraunces over Playfair: it is a variable serif with an optical-size
-        // axis, so the display cut can be genuinely high-contrast while the
-        // small sizes stay sturdy. Playfair at 14px is the single most common
-        // tell of a template.
+        // Three roles, on the same structure the reference sites use:
+        //
+        //   display — Fraunces. A variable serif with an optical-size axis, so
+        //             the display cut is genuinely high-contrast while small
+        //             sizes stay sturdy. (Playfair at 14px is the single most
+        //             common tell of a template.)
+        //   mono    — Martian Mono. Carries the entire UI layer: labels, nav,
+        //             buttons, prices, stats. This is the biggest single reason
+        //             the page reads as designed rather than assembled.
+        //   sans    — Inter Tight. Body copy only, where a mono would be a
+        //             readability tax on anything longer than a line.
         display: ['Fraunces', 'Georgia', 'serif'],
+        mono: ['"Martian Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
         sans: ['"Inter Tight"', 'Inter', 'system-ui', 'sans-serif'],
       },
       fontSize: {
@@ -61,8 +69,11 @@ export default {
         'display-md': ['clamp(1.875rem, 4.5vw, 3.25rem)', { lineHeight: '1.06', letterSpacing: '-0.02em' }],
         headline: ['clamp(1.5rem, 3vw, 2.5rem)', { lineHeight: '1.18', letterSpacing: '-0.012em' }],
         'body-lg': ['clamp(1rem, 1.3vw, 1.1875rem)', { lineHeight: '1.65', letterSpacing: '0' }],
-        label: ['0.75rem', { lineHeight: '1', letterSpacing: '0.18em' }],
-        'label-sm': ['0.6875rem', { lineHeight: '1', letterSpacing: '0.22em' }],
+        // Martian Mono is a wide face and already carries generous sidebearings.
+        // The 0.18em/0.22em tracking these had while they were set in Inter now
+        // reads as broken-apart lettering, so both come right down.
+        label: ['0.6875rem', { lineHeight: '1', letterSpacing: '0.06em' }],
+        'label-sm': ['0.625rem', { lineHeight: '1', letterSpacing: '0.08em' }],
       },
       spacing: {
         section: 'clamp(5rem, 12vw, 10rem)',

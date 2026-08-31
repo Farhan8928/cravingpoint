@@ -81,6 +81,7 @@ export default function Collection() {
                 aria-controls={`panel-${c.id}`}
                 id={`tab-${c.id}`}
                 onClick={() => setActive(c.id)}
+                data-cursor-label="Switch"
                 className={`btn !py-3 ${
                   selected
                     ? 'bg-ink text-ground'
@@ -109,6 +110,7 @@ export default function Collection() {
                 // panel exactly as hover does.
                 onFocus={() => setFocused(i)}
                 tabIndex={0}
+                data-cursor-label={entry.price}
                 className={`group flex cursor-default items-center gap-5 border-b border-line py-5 transition-colors duration-500 ease-lux md:py-6 ${
                   focused === i ? 'lg:bg-sunken/50' : ''
                 }`}
@@ -132,7 +134,7 @@ export default function Collection() {
                     <h3 className="font-display text-xl text-ink transition-transform duration-500 ease-lux group-hover:translate-x-1.5 md:text-2xl">
                       {entry.name}
                     </h3>
-                    <span className="shrink-0 font-display text-lg text-ink md:text-xl">
+                    <span className="num shrink-0 text-base text-ink md:text-lg">
                       {entry.price}
                     </span>
                   </div>
@@ -141,7 +143,7 @@ export default function Collection() {
                     {entry.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="hidden shrink-0 border border-accent/40 px-2 py-0.5 text-label-sm uppercase text-accent xl:inline-block"
+                        className="hidden shrink-0 rounded-full border border-accent/40 px-2.5 py-0.5 font-mono text-label-sm uppercase text-accent xl:inline-block"
                       >
                         {tag}
                       </span>
@@ -183,14 +185,14 @@ export default function Collection() {
                   <h3 className="font-display text-2xl text-ink">{item.name}</h3>
                   <p className="mt-1 text-sm text-muted">{item.note}</p>
                 </div>
-                <span className="shrink-0 font-display text-2xl text-accent">{item.price}</span>
+                <span className="num grad-text shrink-0 text-xl font-medium">{item.price}</span>
               </div>
             </div>
           </div>
         </div>
 
         <Reveal className="mt-14 flex flex-wrap items-center gap-6" delay={0.1}>
-          <a href={BRAND.whatsapp} target="_blank" rel="noopener noreferrer" className="btn-primary">
+          <a href={BRAND.whatsapp} target="_blank" rel="noopener noreferrer" data-cursor-label="WhatsApp" className="btn-primary">
             Order on WhatsApp
           </a>
           <p className="text-sm text-muted">Prices are indicative — confirm at the counter.</p>

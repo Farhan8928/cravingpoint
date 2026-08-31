@@ -39,12 +39,12 @@ export default function Gifting() {
 
               <dl className="mt-8 grid grid-cols-2 gap-6 border-t border-line pt-6">
                 <div>
-                  <dt className="text-label-sm uppercase text-muted">Minimum order</dt>
-                  <dd className="mt-1.5 font-display text-2xl text-ink">20 boxes</dd>
+                  <dt className="font-mono text-label-sm uppercase text-muted">Minimum order</dt>
+                  <dd className="num mt-1.5 text-xl text-ink">20 boxes</dd>
                 </div>
                 <div>
-                  <dt className="text-label-sm uppercase text-muted">Lead time</dt>
-                  <dd className="mt-1.5 font-display text-2xl text-ink">3 days</dd>
+                  <dt className="font-mono text-label-sm uppercase text-muted">Lead time</dt>
+                  <dd className="num mt-1.5 text-xl text-ink">3 days</dd>
                 </div>
               </dl>
 
@@ -53,7 +53,8 @@ export default function Gifting() {
                   href={BRAND.whatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-primary"
+                  data-cursor-label="Enquire"
+                  className="btn-primary rounded-full"
                 >
                   Enquire for bulk orders
                 </a>

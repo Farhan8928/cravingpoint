@@ -2,76 +2,132 @@ import { useEffect, useRef } from 'react';
 import { gsap, prefersReducedMotion } from '../lib/motion';
 
 /**
- * The custom cursor: a small accent dot with a trailing ring.
+ * The cursor: a drop of chocolate.
  *
- * Mounted only where there is a real pointer. A custom cursor on a touchscreen
- * is invisible dead weight, and on a hybrid laptop it should appear the moment a
- * mouse is used — hence `(pointer: fine)` rather than a one-time touch sniff.
+ * A dot with a trailing ring is the default custom cursor and reads as one. This
+ * one is built from the brand instead: a blob carrying the signature gradient
+ * that **squashes and stretches along its direction of travel**, so moving fast
+ * pulls it into a teardrop and stopping lets it settle back into a round drop.
+ * On a site whose hero is chocolate being poured, that is the one cursor that
+ * could only belong here.
  *
- * The native cursor is *not* hidden globally. Hiding it and then failing to draw
- * a replacement — a JS error, a slow chunk — leaves a page with no pointer at
- * all. It is hidden by this component, on mount, once its own elements exist.
+ * The physics is deliberately cheap. Velocity comes from the gap between the
+ * pointer and the blob's own lagging position — no event-timing maths, no
+ * history buffer — and drives exactly three properties: rotation to face the
+ * direction of travel, `scaleX` to stretch along it, `scaleY` to pinch across
+ * it. Volume is roughly conserved (stretch one axis, squeeze the other), which
+ * is what makes it read as a liquid rather than as a shape being scaled.
  *
- * Position is written with `gsap.quickTo`, which keeps one interpolating tween
- * per axis alive instead of allocating a tween per mousemove. An earlier version
- * also drove a full-screen radial-gradient spotlight from CSS variables — that
- * repainted the entire viewport on every pointer move and was a measurable part
- * of why scrolling felt heavy. Transform-only from here.
+ * It also **carries a label**. Anything with `data-cursor-label` expands the
+ * blob into a pill showing that word, so the cursor tells you what a thing does
+ * instead of just decorating it. That is the part that earns its place: it is a
+ * genuine affordance, not an effect.
+ *
+ * Everything is transform-only and runs on one rAF, so the whole thing composites
+ * on the GPU and never touches layout.
  */
 export default function Cursor() {
-  const dotRef = useRef(null);
-  const ringRef = useRef(null);
+  const blobRef = useRef(null);
+  const labelRef = useRef(null);
 
   useEffect(() => {
     if (prefersReducedMotion()) return undefined;
     if (!window.matchMedia('(pointer: fine)').matches) return undefined;
 
-    const dot = dotRef.current;
-    const ring = ringRef.current;
-    if (!dot || !ring) return undefined;
+    const blob = blobRef.current;
+    const label = labelRef.current;
+    if (!blob) return undefined;
 
-    gsap.set([dot, ring], { xPercent: -50, yPercent: -50, opacity: 0 });
+    // The pointer's true position, and the blob's lagging position. The gap
+    // between them *is* the velocity.
+    const target = { x: innerWidth / 2, y: innerHeight / 2 };
+    const pos = { ...target };
+    let visible = false;
+    let labelled = false;
 
-    // The dot tracks tightly; the ring lags, which is what reads as weight.
-    const dotX = gsap.quickTo(dot, 'x', { duration: 0.1, ease: 'power3' });
-    const dotY = gsap.quickTo(dot, 'y', { duration: 0.1, ease: 'power3' });
-    const ringX = gsap.quickTo(ring, 'x', { duration: 0.45, ease: 'power3' });
-    const ringY = gsap.quickTo(ring, 'y', { duration: 0.45, ease: 'power3' });
-
-    let shown = false;
+    gsap.set(blob, { xPercent: -50, yPercent: -50, opacity: 0 });
 
     const onMove = (e) => {
-      if (!shown) {
-        shown = true;
-        gsap.to([dot, ring], { opacity: 1, duration: 0.4 });
+      target.x = e.clientX;
+      target.y = e.clientY;
+      if (!visible) {
+        visible = true;
+        gsap.to(blob, { opacity: 1, duration: 0.4 });
       }
-      dotX(e.clientX);
-      dotY(e.clientY);
-      ringX(e.clientX);
-      ringY(e.clientY);
     };
 
-    // Delegation rather than per-element listeners, so anything rendered later
-    // is covered without re-binding.
-    const INTERACTIVE = 'a, button, [data-cursor="grow"], input, textarea, select';
+    const tick = () => {
+      const dx = target.x - pos.x;
+      const dy = target.y - pos.y;
+
+      // Lag factor. Lower is heavier; 0.18 is loose enough to deform visibly
+      // without feeling disconnected from the hand.
+      pos.x += dx * 0.18;
+      pos.y += dy * 0.18;
+
+      const speed = Math.min(Math.hypot(dx, dy), 90);
+
+      // While labelled the blob is a pill of text — deforming it would make the
+      // word unreadable, so the physics is suspended and only position tracks.
+      if (labelled) {
+        gsap.set(blob, { x: pos.x, y: pos.y, rotate: 0, scaleX: 1, scaleY: 1 });
+        return;
+      }
+
+      const stretch = speed / 90; // 0..1
+      gsap.set(blob, {
+        x: pos.x,
+        y: pos.y,
+        // atan2 gives the heading; the blob's long axis is X, so no offset.
+        rotate: speed > 1 ? (Math.atan2(dy, dx) * 180) / Math.PI : 0,
+        scaleX: 1 + stretch * 0.85,
+        // Volume roughly conserved: what the drop gains in length it loses in
+        // width. Without this it reads as a growing circle, not a liquid.
+        scaleY: 1 - stretch * 0.42,
+      });
+    };
+
+    gsap.ticker.add(tick);
+
+    /**
+     * Delegated, so anything rendered later is covered without re-binding.
+     * `[data-cursor-label]` opts an element in and supplies the word; plain
+     * interactive elements just get a bigger drop.
+     */
+    const INTERACTIVE = 'a, button, input, textarea, select, [data-cursor-label]';
 
     const onOver = (e) => {
-      if (e.target.closest?.(INTERACTIVE)) {
-        gsap.to(ring, { scale: 2.2, duration: 0.4 });
-        gsap.to(dot, { scale: 0, duration: 0.3 });
+      const hit = e.target.closest?.(INTERACTIVE);
+      if (!hit) return;
+
+      const text = hit.getAttribute('data-cursor-label');
+      if (text) {
+        labelled = true;
+        label.textContent = text;
+        gsap.to(blob, {
+          width: label.offsetWidth + 34,
+          height: 34,
+          borderRadius: 999,
+          duration: 0.45,
+          ease: 'power3.out',
+        });
+        gsap.to(label, { opacity: 1, duration: 0.3, delay: 0.08 });
+      } else {
+        gsap.to(blob, { width: 34, height: 34, duration: 0.4, ease: 'power3.out' });
       }
     };
+
     const onOut = (e) => {
-      if (e.target.closest?.(INTERACTIVE)) {
-        gsap.to(ring, { scale: 1, duration: 0.4 });
-        gsap.to(dot, { scale: 1, duration: 0.3 });
-      }
+      if (!e.target.closest?.(INTERACTIVE)) return;
+      labelled = false;
+      gsap.to(label, { opacity: 0, duration: 0.15 });
+      gsap.to(blob, { width: 14, height: 14, duration: 0.4, ease: 'power3.out' });
     };
 
     // Leaving the window should take the cursor with it, or it freezes at the
     // last known point and looks stuck.
-    const onLeave = () => gsap.to([dot, ring], { opacity: 0, duration: 0.3 });
-    const onEnter = () => gsap.to([dot, ring], { opacity: 1, duration: 0.3 });
+    const onLeave = () => gsap.to(blob, { opacity: 0, duration: 0.3 });
+    const onEnter = () => gsap.to(blob, { opacity: 1, duration: 0.3 });
 
     window.addEventListener('mousemove', onMove, { passive: true });
     document.addEventListener('mouseover', onOver);
@@ -80,6 +136,7 @@ export default function Cursor() {
     document.addEventListener('mouseenter', onEnter);
 
     return () => {
+      gsap.ticker.remove(tick);
       window.removeEventListener('mousemove', onMove);
       document.removeEventListener('mouseover', onOver);
       document.removeEventListener('mouseout', onOut);
@@ -89,19 +146,18 @@ export default function Cursor() {
   }, []);
 
   return (
-    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[100] hidden md:block">
-      {/* mix-blend-difference keeps both marks visible over paper and over the
-          film without needing to know which is underneath. */}
+    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[100] hidden lg:block">
       <div
-        ref={ringRef}
-        className="fixed left-0 top-0 h-8 w-8 rounded-full border border-accent mix-blend-difference"
-        style={{ opacity: 0 }}
-      />
-      <div
-        ref={dotRef}
-        className="fixed left-0 top-0 h-1.5 w-1.5 rounded-full bg-accent"
-        style={{ opacity: 0 }}
-      />
+        ref={blobRef}
+        className="grad-102 fixed left-0 top-0 flex items-center justify-center rounded-full"
+        style={{ width: 14, height: 14, opacity: 0, willChange: 'transform' }}
+      >
+        <span
+          ref={labelRef}
+          className="whitespace-nowrap px-2 font-mono text-label-sm uppercase text-white"
+          style={{ opacity: 0 }}
+        />
+      </div>
     </div>
   );
 }
