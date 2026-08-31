@@ -249,6 +249,35 @@
      uses the fixed `on-block` colours — theme-following text would disappear on
      one setting or the other. Same rule as `film-*` over the footage. */
 
+  /**
+   * A colour block redefines the semantic tokens for everything inside it.
+   *
+   * This is the important part, and it replaces an earlier design that had a
+   * separate `block-ink` / `block-muted` / `block-accent` vocabulary you had to
+   * remember to reach for. That approach shipped a bug twice: miss one class and
+   * the text silently falls back to `--ink`, which on a dark block is dark
+   * espresso on near-black — invisible, and invisible in a way that looks like a
+   * rendering glitch rather than a missing class.
+   *
+   * Redefining the tokens locally means `text-ink`, `text-muted`, `text-accent`
+   * and `border-line` keep working inside a block and automatically mean "on
+   * this block". There is one vocabulary for the whole site, and forgetting is
+   * no longer possible. `color` is set on the block itself so even unstyled
+   * inherited text lands correctly.
+   */
+  .block-cacao,
+  .block-ember,
+  .block-ink {
+    --ink: 251 243 233;
+    --ink-soft: 236 216 203;
+    --muted: 232 205 192;
+    --accent: 255 201 168;
+    --line: 255 255 255;
+    --ground: 22 16 12;
+    --shadow: 0 0 0;
+    color: rgb(var(--ink));
+  }
+
   .block-cacao {
     background-color: #5f1f0f;
   }
@@ -266,6 +295,15 @@
      being two barely-different creams stacked on each other. */
   .block-ink {
     background-color: #16100c;
+  }
+
+  /* `--line` inside a block is pure white, which is far too strong at full
+     alpha. Blocks use the hairline at a fraction, so this is the one token that
+     needs its own class rather than a raw `border-line`. */
+  .block-cacao .rule,
+  .block-ember .rule,
+  .block-ink .rule {
+    background: rgb(255 255 255 / 0.25);
   }
 
   /* ---------- Surfaces ---------- */

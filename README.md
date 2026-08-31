@@ -76,11 +76,19 @@ the temperature of a room, which is why `--tan` was added.
 The dark footer also bookends the dark hero, and stops the page ending on two
 barely-different creams stacked on each other.
 
-Content inside `.block-*` uses fixed `block-ink` / `block-muted` / `block-accent`
-colours. Those blocks are dark and saturated in **both** themes, so
-theme-following text would disappear on one setting — same rule as `film-*` over
-the footage. The gifting CTA also flips from the gradient to solid cream, because
-a gradient button on a gradient block is invisible.
+**A colour block owns its foreground.** `.block-*` redefines `--ink`,
+`--muted`, `--accent`, `--line` and `--ground` for its whole subtree, so
+`text-ink` / `text-muted` / `border-line` keep working inside a block and
+automatically mean "on this block".
+
+This replaced a separate `block-ink` / `block-muted` vocabulary you had to
+remember to use — and that shipped a bug twice. Miss one class and the text falls
+back to `--ink`, which on a dark block is dark espresso on near-black: invisible,
+and invisible in a way that reads as a rendering glitch rather than a missing
+class. One vocabulary for the whole site; forgetting is no longer possible.
+
+The gifting CTA still flips from the gradient to solid cream, because a gradient
+button on a gradient block is invisible.
 
 ### Copy
 
@@ -364,13 +372,17 @@ A render under 5 000 characters fails the build rather than shipping a blank pag
 
 ---
 
-## Contrast audit
+## Verification
 
 ```bash
 npm run dev                          # one terminal
 npm i --no-save puppeteer-core       # dev-only, not in package.json
-npm run audit                        # another terminal
+npm run verify                       # another terminal — audit + smoke
 ```
+
+`npm run verify` runs both checks below. Run it before showing work to anyone.
+
+### `npm run audit` — contrast
 
 [`scripts/audit-contrast.mjs`](scripts/audit-contrast.mjs) walks every text node
 in **both themes**, resolves the real painted background behind each one, and
@@ -394,6 +406,24 @@ version measured on load, saw an empty page, and reported a clean bill of health
 while the entire footer was unchecked. And it **counts what it skips** (fixed
 chrome, gradient grounds — neither has a single background colour to measure
 against) so those are visibly excluded rather than quietly dropped.
+
+### `npm run smoke` — behaviour after interaction
+
+[`scripts/smoke.mjs`](scripts/smoke.mjs) covers the two bugs that reached the
+client, both of which were invisible to every check that existed at the time for
+the same reason: **they only appear after the user does something.** A screenshot
+of a freshly loaded page cannot see either.
+
+1. **Footer foreground.** Measures the footer's real computed text colours
+   against its own background, in both themes. Asserts the result, not the
+   mechanism, so it keeps working if the mechanism changes again.
+2. **Stranded cursor label.** Hovers a labelled CTA, then scrolls 2500px
+   *without moving the mouse* — the browser fires no pointer event, so `mouseout`
+   never runs. The label pill used to stay expanded and float over an unrelated
+   section showing a price for a row that was long gone. The fix re-hit-tests
+   under the last known pointer position on scroll.
+
+It runs at **1920×1080**, the width the client reviews at.
 
 ## ⚠ Before this goes live
 

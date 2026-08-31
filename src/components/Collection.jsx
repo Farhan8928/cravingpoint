@@ -110,7 +110,6 @@ export default function Collection() {
                 // panel exactly as hover does.
                 onFocus={() => setFocused(i)}
                 tabIndex={0}
-                data-cursor-label={entry.price}
                 className={`group flex cursor-default items-center gap-5 border-b border-line py-5 transition-colors duration-500 ease-lux md:py-6 ${
                   focused === i ? 'lg:bg-sunken/50' : ''
                 }`}

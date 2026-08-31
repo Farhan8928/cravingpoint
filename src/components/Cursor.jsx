@@ -105,8 +105,8 @@ export default function Cursor() {
         labelled = true;
         label.textContent = text;
         gsap.to(blob, {
-          width: label.offsetWidth + 34,
-          height: 34,
+          width: label.offsetWidth + 26,
+          height: 28,
           borderRadius: 999,
           duration: 0.45,
           ease: 'power3.out',
@@ -117,11 +117,39 @@ export default function Cursor() {
       }
     };
 
-    const onOut = (e) => {
-      if (!e.target.closest?.(INTERACTIVE)) return;
+    /** Collapses back to the plain drop. Safe to call repeatedly. */
+    function reset() {
+      if (!labelled && blob.offsetWidth <= 15) return;
       labelled = false;
       gsap.to(label, { opacity: 0, duration: 0.15 });
       gsap.to(blob, { width: 14, height: 14, duration: 0.4, ease: 'power3.out' });
+    }
+
+    const onOut = (e) => {
+      if (!e.target.closest?.(INTERACTIVE)) return;
+      reset();
+    };
+
+    /**
+     * Scroll is the case `mouseout` cannot cover.
+     *
+     * If the pointer does not move, the browser fires no pointer event when the
+     * page scrolls out from under it — so a labelled cursor stays expanded, and
+     * the label pill ends up stranded in the middle of an unrelated section
+     * showing a price for a row that is no longer on screen. Re-testing what is
+     * actually under the pointer on scroll is the fix; `elementFromPoint` is a
+     * hit-test, not a layout read, so it is cheap enough for a scroll handler.
+     */
+    let lastX = -1;
+    let lastY = -1;
+    const trackPointer = (e) => {
+      lastX = e.clientX;
+      lastY = e.clientY;
+    };
+    const onScroll = () => {
+      if (lastX < 0) return;
+      const under = document.elementFromPoint(lastX, lastY);
+      if (!under || !under.closest(INTERACTIVE)) reset();
     };
 
     // Leaving the window should take the cursor with it, or it freezes at the
@@ -130,6 +158,8 @@ export default function Cursor() {
     const onEnter = () => gsap.to(blob, { opacity: 1, duration: 0.3 });
 
     window.addEventListener('mousemove', onMove, { passive: true });
+    window.addEventListener('mousemove', trackPointer, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
     document.addEventListener('mouseover', onOver);
     document.addEventListener('mouseout', onOut);
     document.addEventListener('mouseleave', onLeave);
@@ -138,6 +168,8 @@ export default function Cursor() {
     return () => {
       gsap.ticker.remove(tick);
       window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mousemove', trackPointer);
+      window.removeEventListener('scroll', onScroll);
       document.removeEventListener('mouseover', onOver);
       document.removeEventListener('mouseout', onOut);
       document.removeEventListener('mouseleave', onLeave);

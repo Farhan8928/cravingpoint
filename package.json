@@ -12,7 +12,9 @@
     "build:ssr": "vite build --ssr src/entry-server.jsx --outDir dist-ssr",
     "assets:frames": "node scripts/process-frames.mjs",
     "assets:images": "node scripts/process-images.mjs",
-    "audit": "node scripts/audit-contrast.mjs"
+    "audit": "node scripts/audit-contrast.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "verify": "npm run audit && npm run smoke"
   },
   "dependencies": {
     "gsap": "^3.12.5",

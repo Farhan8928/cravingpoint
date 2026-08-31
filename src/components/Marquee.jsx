@@ -57,10 +57,10 @@ export default function Marquee({ words = MARQUEE_WORDS, className = '' }) {
     <div className="flex shrink-0 items-center">
       {words.map((word) => (
         <span key={word} className="flex items-center">
-          <span className="whitespace-nowrap px-7 font-display text-3xl text-block-ink md:text-5xl">
+          <span className="whitespace-nowrap px-7 font-display text-3xl text-ink md:text-5xl">
             {word}
           </span>
-          <span aria-hidden="true" className="text-xl text-block-accent">
+          <span aria-hidden="true" className="text-xl text-accent">
             ✳
           </span>
         </span>

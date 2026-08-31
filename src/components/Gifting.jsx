@@ -28,20 +28,20 @@ export default function Gifting() {
     <section id="gifting" className="block-ember overflow-hidden py-section">
       <div className="mx-auto max-w-container px-gutter">
         <Reveal className="mb-14 flex items-baseline gap-6">
-          <span className="eyebrow !text-block-accent">04 — Bulk &amp; corporate</span>
-          <span className="h-px flex-1 bg-white/25" />
+          <span className="eyebrow">04 — Bulk &amp; corporate</span>
+          <span className="rule flex-1" />
         </Reveal>
 
         <div className="grid items-center gap-12 md:grid-cols-12 md:gap-16">
           <div className="md:col-span-5">
             <SplitLines
               as="h2"
-              className="font-display text-display-md text-block-ink"
+              className="font-display text-display-md text-ink"
               lines={['Twenty boxes.', 'Three days. One van.']}
             />
 
             <Reveal delay={0.12} className="mt-8">
-              <p className="max-w-prose text-body-lg text-block-muted">
+              <p className="max-w-prose text-body-lg text-muted">
                 Festival hampers, office parties, wedding dessert tables. Packed in our
                 own boxes, sealed warm, driven across Mumbai the morning you need them.
               </p>
@@ -53,8 +53,8 @@ export default function Gifting() {
                   ['Delivery', 'All Mumbai'],
                 ].map(([k, v]) => (
                   <div key={k}>
-                    <dt className="font-mono text-label-sm uppercase text-block-muted">{k}</dt>
-                    <dd className="num mt-1.5 text-lg text-block-ink">{v}</dd>
+                    <dt className="font-mono text-label-sm uppercase text-muted">{k}</dt>
+                    <dd className="num mt-1.5 text-lg text-ink">{v}</dd>
                   </div>
                 ))}
               </dl>
@@ -67,7 +67,7 @@ export default function Gifting() {
                   data-cursor-label="Enquire"
                   // Solid cream, not the gradient — a gradient button on a
                   // gradient block disappears into it.
-                  className="btn rounded-full bg-block-ink text-[#7e2a14] transition-colors hover:bg-white"
+                  className="btn rounded-full bg-ink text-[#7e2a14] transition-colors hover:bg-white"
                 >
                   Send us the numbers
                 </a>
@@ -97,7 +97,7 @@ export default function Gifting() {
               {/* The handover shot, breaking the lower-left edge. Hidden on the
                   smallest screens, where two frames would be too small to read
                   and the offset just looks like a layout bug. */}
-              <div className="absolute -bottom-12 -left-8 hidden w-[38%] max-w-[220px] overflow-hidden border-[6px] border-block-ink shadow-frame sm:block">
+              <div className="absolute -bottom-12 -left-8 hidden w-[38%] max-w-[220px] overflow-hidden border-[6px] border-ink shadow-frame sm:block">
                 <div className="aspect-[4/5] w-full">
                   <Img
                     slug="gift-detail"
