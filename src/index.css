@@ -64,7 +64,17 @@
     --tan: 40 27 19;            /* #281B13 */
     --ink: 239 231 218;         /* #EFE7DA  bone */
     --ink-soft: 201 188 169;    /* #C9BCA9 */
-    --muted: 143 130 113;       /* #8F8271 */
+    /**
+     * #8F8271 cleared 4.99:1 on `--ground` and was signed off on that. It then
+     * measured **4.46:1** on `--tan`, which was added later and is the lightest
+     * dark surface — so every 14px muted line in the Collection section quietly
+     * dropped below AA when that section changed colour.
+     *
+     * The lesson is in the value: a muted tone has to be checked against the
+     * *lightest* ground it can land on, not the one it was designed against.
+     * #998C7A is 5.08:1 on tan and 5.69:1 on ground.
+     */
+    --muted: 153 140 122;       /* #998C7A */
     --line: 56 45 35;           /* #382D23 */
     --accent: 224 102 74;       /* #E0664A  ember */
     --accent-ink: 26 15 10;

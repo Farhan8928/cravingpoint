@@ -11,7 +11,8 @@
     "assets": "node scripts/process-frames.mjs && node scripts/process-images.mjs",
     "build:ssr": "vite build --ssr src/entry-server.jsx --outDir dist-ssr",
     "assets:frames": "node scripts/process-frames.mjs",
-    "assets:images": "node scripts/process-images.mjs"
+    "assets:images": "node scripts/process-images.mjs",
+    "audit": "node scripts/audit-contrast.mjs"
   },
   "dependencies": {
     "gsap": "^3.12.5",

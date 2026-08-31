@@ -17,6 +17,8 @@ Used under the [Unsplash License](https://unsplash.com/license).
 | `dish-wrap` | [Alexander Mils](https://unsplash.com/@alexandermils) | `photo-1529006557810-274b9b2fc783` |
 | `dish-periperi` | [Madhurima Basak](https://unsplash.com/@bskmadhu_15) | `photo-1727280376746-b89107a5b0df` |
 | `dish-cheesemelt` | [Khalid Boutchich](https://unsplash.com/@khalidboutchich) | `photo-1623405252454-c7d7da3cb7fe` |
+| `gift-boxes` | [Conor Brown](https://unsplash.com/@commonboxturtle) | `photo-1622467827417-bbe2237067a9` |
+| `gift-detail` | [Jojo Yuen](https://unsplash.com/@jojoyuen) | `photo-1622071726728-c32575ae96a3` |
 | `dish-fries` | [Jonathan Borba](https://unsplash.com/@jonathanborba) | `photo-1700835880456-2e5519fa54d6` |
 
 The two film sequences and the stills pulled from them (`still-*`,

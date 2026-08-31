@@ -42,10 +42,14 @@ export default {
           ink: '#F4EEE4',
           muted: '#B9AE9E',
           ground: '#100C09',
-          // The light theme's accent (#B0432B) is a dark red — correct on paper,
-          // barely 2.5:1 over the footage. Type over film uses the ember cut in
-          // both themes.
-          accent: '#E0664A',
+          // Type over film uses this in both themes — the light theme's accent
+          // (#B0432B) is a dark red, correct on paper and invisible on footage.
+          //
+          // This was #E0664A, which measures **4.23:1** on the hero's slate and
+          // therefore fails AA for the 10px eyebrow set in it. Contrast over the
+          // film has to be checked against the footage, not against the page
+          // ground, which is the check that was missing. #FFAE8C is 8.02:1.
+          accent: '#FFAE8C',
         },
         // Type inside `.block-cacao` / `.block-ember`. Those blocks are dark and
         // saturated in both themes, so their contents must not follow the theme.

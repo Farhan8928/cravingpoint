@@ -31,7 +31,8 @@ const OUT = path.resolve('public/images');
  * from ten different photographers read as one set. Mixing landscape and
  * portrait here would look like a scrape, which is exactly what it is.
  */
-const RATIO = { w: 1000, h: 1250 };
+const RATIO = { w: 1000, h: 1250 };          // 4:5, the default for dishes
+const LANDSCAPE = { w: 1600, h: 1200 };      // 4:3, for the gifting hero
 const WIDTHS = [480, 800, 1200];
 
 const SOURCES = {
@@ -89,6 +90,19 @@ const SOURCES = {
     at: 'https://unsplash.com/@khalidboutchich',
     alt: 'A toasted flatbread lifted to show a long stretch of melted cheese',
   },
+  'gift-boxes': {
+    photo: 'photo-1622467827417-bbe2237067a9',
+    ratio: LANDSCAPE,
+    by: 'Conor Brown',
+    at: 'https://unsplash.com/@commonboxturtle',
+    alt: 'An open kraft bakery box packed with assorted cookies on a dark counter',
+  },
+  'gift-detail': {
+    photo: 'photo-1622071726728-c32575ae96a3',
+    by: 'Jojo Yuen',
+    at: 'https://unsplash.com/@jojoyuen',
+    alt: 'A person holding out an open pink bakery box of filled doughnuts',
+  },
   'dish-fries': {
     photo: 'photo-1700835880456-2e5519fa54d6',
     by: 'Jonathan Borba',
@@ -119,8 +133,9 @@ async function main() {
   for (const [slug, cfg] of Object.entries(SOURCES)) {
     const src = await fetchPhoto(slug, cfg.photo);
 
+    const ratio = cfg.ratio || RATIO;
     for (const w of WIDTHS) {
-      const h = Math.round((RATIO.h / RATIO.w) * w);
+      const h = Math.round((ratio.h / ratio.w) * w);
       await sharp(src)
         // `attention` picks the crop around the most salient region rather than
         // the geometric centre — on a plated dish that is the food, not the rim.

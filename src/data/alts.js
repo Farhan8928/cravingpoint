@@ -9,5 +9,7 @@ export const ALTS = {
   "dish-wrap": "A grilled chicken wrap cut open, showing meat and red onion",
   "dish-periperi": "Charred herb-flecked grilled chicken pieces on a dark tray",
   "dish-cheesemelt": "A toasted flatbread lifted to show a long stretch of melted cheese",
+  "gift-boxes": "An open kraft bakery box packed with assorted cookies on a dark counter",
+  "gift-detail": "A person holding out an open pink bakery box of filled doughnuts",
   "dish-fries": "A dark bowl of loaded fries with cheese sauce and spring onion"
 };

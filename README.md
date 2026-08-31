@@ -292,9 +292,10 @@ and the grain is static.
 ```
 index.html            document shell, meta, JSON-LD, no-JS fallback
 scripts/
-  process-frames.mjs  PNG masters -> WebP sequences + stills + manifest
-  process-images.mjs  dish photography -> 4:5 WebP sets + alts + CREDITS.md
-  prerender.mjs       bakes rendered markup into dist/index.html
+  process-frames.mjs   PNG masters -> WebP sequences + stills + manifest
+  process-images.mjs   photography -> cropped WebP sets + alts + CREDITS.md
+  audit-contrast.mjs   WCAG AA check over every text node, both themes
+  prerender.mjs        bakes rendered markup into dist/index.html
 src/
   main.jsx            hydrate (prod) / render (dev)
   entry-server.jsx    SSR entry for the prerender
@@ -354,8 +355,7 @@ A render under 5 000 characters fails the build rather than shipping a blank pag
 - `prefers-reduced-motion` is honoured throughout: Lenis is skipped entirely
   (rather than set to zero smoothing), sequences render a still, the Craft section
   collapses from 3.5 screens to one readable viewport, the marquee stops.
-- Both themes are contrast-checked. `--muted` is the tightest pair at 4.7:1 on
-  its ground, which is why it is `#6F6152` and not the lighter clay it started as.
+- **Contrast is measured, not eyeballed** — `npm run audit`. See below.
 - Because reveals start hidden in CSS, a `<noscript>` block in `index.html` forces
   them open — the failure mode is "no animation", not "no page".
 - Skip link, real `tablist` semantics on the counter switch, focus-visible rings,
@@ -364,12 +364,51 @@ A render under 5 000 characters fails the build rather than shipping a blank pag
 
 ---
 
+## Contrast audit
+
+```bash
+npm run dev                          # one terminal
+npm i --no-save puppeteer-core       # dev-only, not in package.json
+npm run audit                        # another terminal
+```
+
+[`scripts/audit-contrast.mjs`](scripts/audit-contrast.mjs) walks every text node
+in **both themes**, resolves the real painted background behind each one, and
+exits non-zero on anything under WCAG AA. It exists because reviewing colour by
+eye kept passing things that were actually failing — two real bugs shipped that
+way:
+
+- The hero eyebrow at `#E0664A` measured **4.23:1** over the film and looked
+  perfectly fine in a screenshot. Type over footage has to be checked against the
+  *footage*, not the page ground. Now `#FFAE8C`, 8.02:1.
+- `--muted` was signed off at 4.99:1 on `--ground`. A later change moved the
+  Collection section onto `--tan` — the lightest dark surface — and every 14px
+  muted line silently dropped to **4.46:1**. Now `#998C7A`, 5.08:1 on tan.
+
+Same mistake twice: a colour is only safe against the specific surface it lands
+on, and surfaces change.
+
+Two details that make it trustworthy. It **scrolls the whole page before
+measuring**, because every section animates in from `opacity: 0` — the first
+version measured on load, saw an empty page, and reported a clean bill of health
+while the entire footer was unchecked. And it **counts what it skips** (fixed
+chrome, gradient grounds — neither has a single background colour to measure
+against) so those are visibly excluded rather than quietly dropped.
+
 ## ⚠ Before this goes live
 
-**1. Dish photography is placeholder.** All ten dish photos are Unsplash
-stand-ins, not Craving Point's food — see [CREDITS.md](CREDITS.md). Swapping one
-is a single entry in [`scripts/process-images.mjs`](scripts/process-images.mjs);
-nothing in the components or the menu data moves.
+**1. Photography is placeholder.** All twelve photos are Unsplash stand-ins, not
+Craving Point's own — see [CREDITS.md](CREDITS.md). Swapping one is a single
+entry in [`scripts/process-images.mjs`](scripts/process-images.mjs); nothing in
+the components or the menu data moves.
+
+Note the gifting section deliberately does **not** use the client's own footage.
+That film is AI-generated, and the wide dessert-table frame that was there read
+as a render — impossibly symmetrical, every plate lit identically, no hands
+anywhere. On the one section asking a business to place a twenty-box order, a
+synthetic-looking picture undercuts the claim. Both images there are now genuine
+photographs. Replace them with real shots of *your* boxes, not with stills from
+the film.
 
 **2. Contact details are placeholder.** The source prototypes had none. In
 [`src/data/brand.js`](src/data/brand.js):
