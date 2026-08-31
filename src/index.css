@@ -17,6 +17,16 @@
     --ground: 242 236 225;      /* #F2ECE1  bone paper */
     --raised: 250 246 239;      /* #FAF6EF  cards, lifted off the paper */
     --sunken: 231 223 209;      /* #E7DFD1  alternating bands */
+    /**
+     * The warm tier.
+     *
+     * `--sunken` sits only 11 points off `--ground` — enough to separate two
+     * adjacent bands, not enough to read as a different room. `--tan` is a
+     * genuinely peachy cream that changes the temperature of a whole section,
+     * which is what the reference sites get their variety from (Sunbeam's
+     * equivalent is its single most-used background, 25 times over).
+     */
+    --tan: 250 231 212;         /* #FAE7D4 */
     --ink: 35 24 15;            /* #23180F  espresso */
     --ink-soft: 74 58 44;       /* #4A3A2C */
     --muted: 111 97 82;         /* #6F6152  clay — 4.7:1 on ground, body-safe */
@@ -49,6 +59,9 @@
     --ground: 23 17 13;         /* #17110D  roasted */
     --raised: 33 25 19;         /* #211913 */
     --sunken: 16 12 9;          /* #100C09 */
+    /* The warm tier inverts to a warm dark brown rather than another near-black,
+       so the temperature shift survives the theme swap. */
+    --tan: 40 27 19;            /* #281B13 */
     --ink: 239 231 218;         /* #EFE7DA  bone */
     --ink-soft: 201 188 169;    /* #C9BCA9 */
     --muted: 143 130 113;       /* #8F8271 */
@@ -213,6 +226,36 @@
 
   .btn-ghost {
     @apply btn border border-line text-ink hover:border-accent hover:text-accent;
+  }
+
+  /* ---------- Bold colour blocks ----------
+
+     The thing the page was missing. Six sections of bone paper in a row is a
+     document, not a site: the reference winners break their cream with whole
+     sections in a saturated brand colour (Sunbeam paints eight sections in its
+     red) and that contrast is most of what reads as "attractive".
+
+     These two are dark and saturated in *both* themes, so anything inside them
+     uses the fixed `on-block` colours — theme-following text would disappear on
+     one setting or the other. Same rule as `film-*` over the footage. */
+
+  .block-cacao {
+    background-color: #5f1f0f;
+  }
+  [data-theme='dark'] .block-cacao {
+    /* A hair lighter on dark, or the block vanishes into the roasted ground. */
+    background-color: #6d2512;
+  }
+
+  .block-ember {
+    background-image: linear-gradient(154deg, var(--g1) 0%, var(--g2) 62%, var(--g3) 130%);
+  }
+
+  /* The closing block. The page opens on a dark full-bleed film, so ending on
+     one bookends it — and it stops the last two sections (visit, footer) from
+     being two barely-different creams stacked on each other. */
+  .block-ink {
+    background-color: #16100c;
   }
 
   /* ---------- Surfaces ---------- */

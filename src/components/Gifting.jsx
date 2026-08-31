@@ -16,35 +16,35 @@ import Img from './Img';
  */
 export default function Gifting() {
   return (
-    <section id="gifting" className="bg-sunken py-section">
+    <section id="gifting" className="block-ember py-section">
       <div className="mx-auto max-w-container px-gutter">
         <Reveal className="mb-14 flex items-baseline gap-6">
-          <span className="eyebrow">04 — Bulk &amp; Corporate</span>
-          <span className="rule flex-1" />
+          <span className="eyebrow !text-block-accent">04 — Bulk &amp; corporate</span>
+          <span className="h-px flex-1 bg-white/25" />
         </Reveal>
 
         <div className="grid items-center gap-12 md:grid-cols-12 md:gap-16">
           <div className="md:col-span-5">
             <SplitLines
               as="h2"
-              className="font-display text-display-md text-ink"
-              lines={['Gifting that arrives', 'before you do.']}
+              className="font-display text-display-md text-block-ink"
+              lines={['Twenty boxes.', 'Three days. One van.']}
             />
 
             <Reveal delay={0.12} className="mt-8">
-              <p className="lede">
-                Festival hampers, office celebrations and event dessert tables, packed in
-                our own boxes and delivered across Mumbai.
+              <p className="max-w-prose text-body-lg text-block-muted">
+                Festival hampers, office parties, wedding dessert tables. Packed in our
+                own boxes, sealed warm, driven across Mumbai the morning you need them.
               </p>
 
-              <dl className="mt-8 grid grid-cols-2 gap-6 border-t border-line pt-6">
+              <dl className="mt-8 grid grid-cols-2 gap-6 border-t border-white/25 pt-6">
                 <div>
-                  <dt className="font-mono text-label-sm uppercase text-muted">Minimum order</dt>
-                  <dd className="num mt-1.5 text-xl text-ink">20 boxes</dd>
+                  <dt className="font-mono text-label-sm uppercase text-block-muted">Minimum order</dt>
+                  <dd className="num mt-1.5 text-xl text-block-ink">20 boxes</dd>
                 </div>
                 <div>
-                  <dt className="font-mono text-label-sm uppercase text-muted">Lead time</dt>
-                  <dd className="num mt-1.5 text-xl text-ink">3 days</dd>
+                  <dt className="font-mono text-label-sm uppercase text-block-muted">Lead time</dt>
+                  <dd className="num mt-1.5 text-xl text-block-ink">3 days</dd>
                 </div>
               </dl>
 
@@ -54,9 +54,9 @@ export default function Gifting() {
                   target="_blank"
                   rel="noopener noreferrer"
                   data-cursor-label="Enquire"
-                  className="btn-primary rounded-full"
+                  className="btn rounded-full bg-block-ink text-[#7e2a14] transition-colors hover:bg-white"
                 >
-                  Enquire for bulk orders
+                  Send us the numbers
                 </a>
               </Magnetic>
             </Reveal>

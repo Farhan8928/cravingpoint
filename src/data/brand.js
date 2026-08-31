@@ -16,7 +16,7 @@ export const BRAND = {
   full: 'Craving Point .88',
   tagline: 'The Art of Indulgence',
   description:
-    'A dessert atelier and grill in Trombay, Mumbai — where chocolate is poured by hand and nothing leaves the pass unfinished.',
+    'Brownies, waffles and charcoal wraps in Cheeta Camp, Trombay. Made when you ask, not before.',
 
   // ⚠ PLACEHOLDER — replace with the real number, digits only, country code first.
   phone: '+919999999999',

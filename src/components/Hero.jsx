@@ -72,7 +72,7 @@ export default function Hero({ onProgress }) {
       >
         <div className="mx-auto w-full max-w-container">
           <span data-fade className="eyebrow block translate-y-4 !text-film-accent opacity-0">
-            Cheeta Camp · Trombay · Mumbai
+            Open till late · Cheeta Camp, Trombay
           </span>
 
           {/* Left-aligned and bottom-set rather than centred. A centred stack
@@ -89,8 +89,7 @@ export default function Hero({ onProgress }) {
               data-fade
               className="max-w-sm translate-y-4 text-body-lg text-film-muted opacity-0"
             >
-              Chocolate poured by hand. Charcoal lit at noon. Nothing leaves the
-              pass unfinished.
+              Poured by hand. Marked on charcoal. Four minutes, every time.
             </p>
 
             <div data-fade className="translate-y-4 opacity-0">

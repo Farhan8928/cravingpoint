@@ -57,10 +57,10 @@ export default function Marquee({ words = MARQUEE_WORDS, className = '' }) {
     <div className="flex shrink-0 items-center">
       {words.map((word) => (
         <span key={word} className="flex items-center">
-          <span className="whitespace-nowrap px-7 font-display text-3xl text-ink md:text-5xl">
+          <span className="whitespace-nowrap px-7 font-display text-3xl text-block-ink md:text-5xl">
             {word}
           </span>
-          <span aria-hidden="true" className="text-xl text-accent">
+          <span aria-hidden="true" className="text-xl text-block-accent">
             ✳
           </span>
         </span>
@@ -69,7 +69,7 @@ export default function Marquee({ words = MARQUEE_WORDS, className = '' }) {
   );
 
   return (
-    <div className={`relative overflow-hidden border-y border-line bg-sunken py-8 ${className}`}>
+    <div className={`block-cacao relative overflow-hidden py-8 ${className}`}>
       {/* The track is duplicated for the loop, so the second copy is hidden from
           assistive tech — otherwise every phrase is announced twice. */}
       <div ref={trackRef} className="marquee-track">
@@ -80,8 +80,8 @@ export default function Marquee({ words = MARQUEE_WORDS, className = '' }) {
       </div>
 
       {/* Edge fades, so words enter and leave rather than being clipped. */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-sunken to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-sunken to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#5f1f0f] to-transparent dark:from-[#6d2512]" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-[#5f1f0f] to-transparent dark:from-[#6d2512]" />
     </div>
   );
 }

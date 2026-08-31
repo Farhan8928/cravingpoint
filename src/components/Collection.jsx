@@ -49,10 +49,10 @@ export default function Collection() {
   }, [active]);
 
   return (
-    <section id="collection" className="relative bg-ground py-section">
+    <section id="collection" className="relative bg-tan py-section">
       <div className="mx-auto max-w-container px-gutter">
         <Reveal className="mb-14 flex items-baseline gap-6">
-          <span className="eyebrow">02 — The Collection</span>
+          <span className="eyebrow">02 — The counter</span>
           <span className="rule flex-1" />
         </Reveal>
 
@@ -60,7 +60,7 @@ export default function Collection() {
           <SplitLines
             as="h2"
             className="font-display text-display-lg text-ink md:col-span-7"
-            lines={['Two counters,', 'one obsession.']}
+            lines={['Brownie. Waffle.', 'Ganache. Gold.']}
           />
           <Reveal className="md:col-span-5" delay={0.15}>
             <p className="lede">{collection.blurb}</p>

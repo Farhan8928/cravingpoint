@@ -16,15 +16,15 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative overflow-hidden bg-sunken pt-section">
+    <footer className="block-ink relative overflow-hidden pt-section">
       <div className="mx-auto max-w-container px-gutter">
         <div className="grid gap-12 pb-16 md:grid-cols-12">
           <div className="md:col-span-5">
-            <p className="max-w-sm font-display text-headline text-ink">{BRAND.description}</p>
+            <p className="max-w-sm font-display text-headline text-block-ink">{BRAND.description}</p>
           </div>
 
           <nav aria-label="Footer" className="md:col-span-3 md:col-start-8">
-            <h2 className="font-mono text-label-sm uppercase text-muted">Explore</h2>
+            <h2 className="font-mono text-label-sm uppercase text-block-accent">Explore</h2>
             <ul className="mt-5 space-y-3">
               {NAV.map((item) => (
                 <li key={item.href}>
@@ -34,7 +34,7 @@ export default function Footer() {
                       e.preventDefault();
                       scrollTo(item.href, { offset: -80 });
                     }}
-                    className="text-ink-soft transition-colors duration-300 hover:text-accent"
+                    className="text-block-muted transition-colors duration-300 hover:text-white"
                   >
                     {item.label}
                   </a>
@@ -44,7 +44,7 @@ export default function Footer() {
           </nav>
 
           <div className="md:col-span-2">
-            <h2 className="font-mono text-label-sm uppercase text-muted">Connect</h2>
+            <h2 className="font-mono text-label-sm uppercase text-block-accent">Connect</h2>
             <ul className="mt-5 space-y-3">
               {BRAND.social.map((s) => (
                 <li key={s.label}>
@@ -52,7 +52,7 @@ export default function Footer() {
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-ink-soft transition-colors duration-300 hover:text-accent"
+                    className="text-block-muted transition-colors duration-300 hover:text-white"
                   >
                     {s.label}
                   </a>
@@ -61,7 +61,7 @@ export default function Footer() {
               <li>
                 <a
                   href={`tel:${BRAND.phone}`}
-                  className="text-ink-soft transition-colors duration-300 hover:text-accent"
+                  className="text-block-muted transition-colors duration-300 hover:text-white"
                 >
                   {BRAND.phoneDisplay}
                 </a>
@@ -78,22 +78,22 @@ export default function Footer() {
         <Reveal y={50} duration={1.3} className="overflow-hidden pb-10">
           <div
             aria-hidden="true"
-            className="select-none whitespace-nowrap text-center font-display text-display-xl leading-[0.82] text-ink/[0.08]"
+            className="select-none whitespace-nowrap text-center font-display text-display-xl leading-[0.82] text-white/[0.07]"
           >
-            Craving Point<span className="text-accent/25">.88</span>
+            Craving Point<span className="text-block-accent/25">.88</span>
           </div>
         </Reveal>
 
-        <div className="flex flex-col items-center justify-between gap-4 border-t border-line py-7 text-sm text-muted sm:flex-row lg:pb-28">
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/12 py-7 text-sm text-block-muted sm:flex-row lg:pb-28">
           <p>
             © {year} {BRAND.full}. All rights reserved.
           </p>
           <div className="flex items-center gap-5">
-            <ThemeToggle />
+            <ThemeToggle onFilm />
             <button
               type="button"
               onClick={() => scrollTo('#top', { offset: 0 })}
-              className="font-mono text-label-sm uppercase transition-colors duration-300 hover:text-accent"
+              className="font-mono text-label-sm uppercase transition-colors duration-300 hover:text-white"
             >
               Back to top ↑
             </button>

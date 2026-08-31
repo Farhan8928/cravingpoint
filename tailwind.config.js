@@ -24,6 +24,7 @@ export default {
         ground: 'rgb(var(--ground) / <alpha-value>)',
         raised: 'rgb(var(--raised) / <alpha-value>)',
         sunken: 'rgb(var(--sunken) / <alpha-value>)',
+        tan: 'rgb(var(--tan) / <alpha-value>)',
         ink: {
           DEFAULT: 'rgb(var(--ink) / <alpha-value>)',
           soft: 'rgb(var(--ink-soft) / <alpha-value>)',
@@ -45,6 +46,13 @@ export default {
           // barely 2.5:1 over the footage. Type over film uses the ember cut in
           // both themes.
           accent: '#E0664A',
+        },
+        // Type inside `.block-cacao` / `.block-ember`. Those blocks are dark and
+        // saturated in both themes, so their contents must not follow the theme.
+        block: {
+          ink: '#FBF3E9',
+          muted: '#E4C9BC',
+          accent: '#FFC9A8',
         },
       },
       fontFamily: {

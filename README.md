@@ -46,8 +46,67 @@ identity doesn't. That reuse is what makes a gradient read as a brand asset
 rather than decoration.
 
 It appears on exactly four things: the floating nav pill, the primary CTA, the
-theme toggle thumb, and the cursor. Everywhere else the accent is flat. A
-gradient that is everywhere is a texture; a gradient that is rare is a signal.
+theme toggle thumb, and the cursor — plus one full section. Everywhere else the
+accent is flat. A gradient that is everywhere is a texture; a gradient that is
+rare is a signal.
+
+### Section rhythm
+
+The first build was six sections of bone paper in a row. That is a document, not
+a site. The winners in this category break their cream with **whole sections in a
+saturated brand colour** — Sunbeam's `--tan` (`#fce9d5`) is its most-used
+background at 25 uses, and it paints eight further sections in `--red`
+(`#ee3629`) outright. That contrast is most of what reads as "attractive".
+
+| # | Section | Ground |
+|---|---|---|
+| — | Hero | film (dark) |
+| 01 | Manifesto | bone `--ground` |
+| — | Marquee | **deep cacao** `.block-cacao` |
+| 02 | Collection | **warm tan** `--tan` |
+| 03 | Craft | film (dark) |
+| 04 | Gifting | **ember gradient** `.block-ember` |
+| 05 | Visit | bone `--ground` |
+| — | Footer | **near-black** `.block-ink` |
+
+Dark, bone, cacao, tan, dark, ember, bone, ink. `--sunken` sits only 11 points
+off `--ground` — enough to separate two adjacent bands, never enough to change
+the temperature of a room, which is why `--tan` was added.
+
+The dark footer also bookends the dark hero, and stops the page ending on two
+barely-different creams stacked on each other.
+
+Content inside `.block-*` uses fixed `block-ink` / `block-muted` / `block-accent`
+colours. Those blocks are dark and saturated in **both** themes, so
+theme-following text would disappear on one setting — same rule as `film-*` over
+the footage. The gifting CTA also flips from the gradient to solid cream, because
+a gradient button on a gradient block is invisible.
+
+### Copy
+
+The other half of what makes these sites appetising, and the easy half to miss.
+Sunbeam's section headings are literal ingredient lists:
+
+> Bagel. Sausage. Cheese. Egg.
+> Espresso. Milk. Cinnamon. Maple.
+
+Concrete nouns, full stops, staccato. You can taste it. The first draft here was
+literary and completely cold by comparison — "Dessert is not an afterthought",
+"Two counters, one obsession", "Gifting that arrives before you do." Well
+written, zero appetite. Rewritten to the same register:
+
+| Section | Was | Now |
+|---|---|---|
+| Manifesto | Dessert is not an afterthought. | **Cocoa. Butter. Salt. Fire.** |
+| Collection | Two counters, one obsession. | **Brownie. Waffle. Ganache. Gold.** |
+| Gifting | Gifting that arrives before you do. | **Twenty boxes. Three days. One van.** |
+| Visit | Find the counter. | **Cheeta Camp. Open till one.** |
+
+Body copy followed: specifics over adjectives. "You will wait four minutes, and
+that wait is the whole point" beats any sentence containing the word *artisanal*.
+The stat row now carries **4 min — average wait** rather than a decorative
+"100% made to order", and the marquee reads *Poured warm · Lit at noon · Four
+minutes · Open till one*.
 
 ### Type: three roles
 

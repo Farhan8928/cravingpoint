@@ -17,7 +17,7 @@ export const COLLECTIONS = [
     eyebrow: 'The Sweet Counter',
     title: 'Desserts',
     blurb:
-      'Built to order, finished at the pass. Chocolate is poured warm over everything that asks for it.',
+      'Everything is finished at the pass. If it can take warm chocolate, it gets warm chocolate.',
     items: [
       {
         name: 'Signature Sea Salt Brownie',
@@ -68,7 +68,7 @@ export const COLLECTIONS = [
     eyebrow: 'The Hot Counter',
     title: 'The Grill',
     blurb:
-      'Charcoal-marked, folded to order, wrapped while the tawa is still loud. The savoury half of the room.',
+      'Marked on charcoal, folded to order, cut while the tawa is still loud.',
     items: [
       {
         name: 'Signature Chicken Wrap',
@@ -104,10 +104,10 @@ export const COLLECTIONS = [
 
 /** Words for the infinite marquee between acts. */
 export const MARQUEE_WORDS = [
-  'Hand-poured chocolate',
-  'Charcoal grill',
-  'Made to order',
-  'Cheeta Camp, Trombay',
-  'Open till late',
-  'Bulk & corporate gifting',
+  'Poured warm',
+  'Lit at noon',
+  'Four minutes',
+  'Open till one',
+  'Cheeta Camp',
+  'Twenty boxes, three days',
 ];

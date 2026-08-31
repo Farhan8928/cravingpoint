@@ -24,7 +24,7 @@ export default function Visit() {
     <section id="visit" className="bg-ground py-section">
       <div className="mx-auto max-w-container px-gutter">
         <Reveal className="mb-14 flex items-baseline gap-6">
-          <span className="eyebrow">05 — Visit</span>
+          <span className="eyebrow">05 — Come in</span>
           <span className="rule flex-1" />
         </Reveal>
 
@@ -33,7 +33,7 @@ export default function Visit() {
             <SplitLines
               as="h2"
               className="font-display text-display-md text-ink"
-              lines={['Find the', 'counter.']}
+              lines={['Cheeta Camp.', 'Open till one.']}
             />
 
             <Reveal delay={0.1} className="mt-10 space-y-9">
