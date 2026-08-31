@@ -7,10 +7,17 @@ dist-ssr
 .env.*
 !.env.example
 
-# Frame sequences are generated from the raw PNG masters by
-# `npm run assets:frames`. ~20 MB of WebP that git has no business tracking —
-# regenerate them rather than committing them.
-public/frames
+# NOTE: public/frames and public/images are deliberately COMMITTED.
+#
+# They are generated (`npm run assets`), so the instinct is to ignore them. But
+# their source cannot be reached from CI: the frame masters are 547 MB of PNGs
+# that live on the designer's machine and are not in this repo. A deploy host
+# therefore has no way to regenerate them, and ignoring them ships a site whose
+# hero canvas is permanently blank.
+#
+# When the source of a generated asset is not available to the build, the
+# generated asset is the source. ~17 MB of WebP, which git and Vercel both
+# handle without complaint.
 
 # Downloaded placeholder photography — regenerate with npm run assets:images
 .cache

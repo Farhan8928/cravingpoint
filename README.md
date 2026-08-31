@@ -531,12 +531,52 @@ illustrative, as are the opening hours.
 
 ## Deploying
 
-Static output — any host works.
+Static output. Vercel config is in [`vercel.json`](vercel.json); any static host
+works with the same two settings:
 
 ```
-build command:    npm run assets && npm run build
-publish directory: dist
+build command:      npm run build      ← NOT `npm run assets && npm run build`
+publish directory:  dist
 ```
 
-Serve `public/frames/**` with a long `Cache-Control` (they are content-stable and
-regenerate under the same names only when the footage changes).
+### Why the build command must not include `npm run assets`
+
+**`npm run assets` cannot run on a deploy host, and must never be in the build
+command.** It reads the 547 MB of PNG frame masters from a local path
+(`D:/Downloads/...`, overridable with `SRC`). Those masters are not in this repo
+and are not meant to be — so on CI the step either fails outright or silently
+produces nothing.
+
+That is why `public/frames/` and `public/images/` are **committed** rather than
+gitignored, which is the opposite of the usual rule for generated files. The
+reasoning: when the *source* of a generated asset is not reachable from the
+build, the generated asset is the source. Ignoring them ships a site whose hero
+canvas is permanently blank — which is exactly what the first Vercel deploy did.
+
+Roughly 17 MB of WebP. Git and Vercel both handle that without complaint.
+
+**Asset changes are a two-step process.** Regenerate locally, then commit the
+output:
+
+```bash
+npm run assets     # needs the masters on this machine
+git add public/frames public/images src/data
+git commit -m "assets: re-cut hero sequence"
+git push
+```
+
+### Caching
+
+`vercel.json` sets `immutable` only on `/assets/*`, which Vite content-hashes.
+`/frames/*` and `/images/*` get 30 days plus `stale-while-revalidate` instead —
+their filenames are stable, so `immutable` there would pin a year-old hero
+sequence in every returning visitor's browser after a re-cut. Thirty days is the
+compromise: repeat visits inside a month cost nothing, and a footage change still
+propagates on its own.
+
+### Checklist for a deploy that actually works
+
+- [ ] `public/frames/` is tracked (`git ls-files public/frames | wc -l` → 796)
+- [ ] `src/data/sequences.js` frame counts match the files on disk
+- [ ] Build command is `npm run build`, output directory `dist`
+- [ ] `npm run verify` passes locally first
