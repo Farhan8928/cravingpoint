@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#131313" />
+
+    <title>Craving Point .88 — Dessert Atelier &amp; Grill, Trombay Mumbai</title>
+    <meta
+      name="description"
+      content="Hand-poured chocolate, charcoal-grilled wraps and made-to-order desserts in Chembur Camp, Trombay. Open till late. Bulk and corporate gifting across Mumbai."
+    />
+    <link rel="canonical" href="https://cravingpoint.example/" />
+
+    <!-- Open Graph. WhatsApp is the primary sharing surface for a Mumbai
+         counter, and it reads og:image before anything else. -->
+    <meta property="og:type" content="restaurant" />
+    <meta property="og:title" content="Craving Point .88 — The Art of Indulgence" />
+    <meta
+      property="og:description"
+      content="Hand-poured chocolate, charcoal-grilled wraps and made-to-order desserts in Trombay, Mumbai."
+    />
+    <meta property="og:image" content="/images/poster-hero.webp" />
+    <meta property="og:locale" content="en_IN" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Fonts. Preconnect before the stylesheet so the DNS/TLS handshake to the
+         font host overlaps the CSS request instead of following it. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..700&family=Montserrat:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- The hero's first frames decide whether the opening scrub is smooth.
+         Preloading two of them at the mobile tier costs ~40 kB and removes the
+         handshake from the critical path for every device. -->
+    <link rel="preload" as="image" href="/frames/hero/w720/0001.webp" />
+    <link rel="preload" as="image" href="/frames/hero/w720/0002.webp" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "name": "Craving Point .88",
+        "servesCuisine": ["Desserts", "Grill", "Wraps"],
+        "priceRange": "₹₹",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Chembur Camp",
+          "addressLocality": "Trombay, Mumbai",
+          "addressRegion": "Maharashtra",
+          "postalCode": "400088",
+          "addressCountry": "IN"
+        },
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday"],
+            "opens": "12:00",
+            "closes": "23:30"
+          },
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Friday", "Saturday", "Sunday"],
+            "opens": "12:00",
+            "closes": "01:00"
+          }
+        ]
+      }
+    </script>
+
+    <style>
+      /* Holds the page black from the very first paint, before the CSS bundle
+         arrives — otherwise the prerendered markup flashes on white. */
+      html { background: #131313; color-scheme: dark; }
+    </style>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <!-- Everything on this page animates from a hidden CSS state. If the bundle
+         never boots — a JS error, a blocked script, a crawler that does not run
+         JS — that state would stay closed and the prerendered content would be
+         invisible. This makes the failure mode "no animation" instead of "no
+         page", and it is removed the moment the module entry runs. -->
+    <noscript>
+      <style>
+        .reveal-mask { clip-path: none !important; }
+        .split-line > span { transform: none !important; }
+        [style*="opacity: 0"], [style*="opacity:0"] { opacity: 1 !important; }
+      </style>
+    </noscript>
+
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

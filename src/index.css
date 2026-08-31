@@ -1,0 +1,195 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    /* Set by the cursor component; used by the gold spotlight in the hero. */
+    --px: 50%;
+    --py: 50%;
+  }
+
+  html {
+    /* Lenis drives scrolling. Leaving native smooth scroll on as well gives two
+       competing animations on every anchor click. */
+    scroll-behavior: auto;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-ink text-cream font-sans antialiased;
+    overflow-x: hidden;
+    /* Dark UI at small sizes reads heavy; a hair of negative weight compensates
+       for the halation of light type on a near-black ground. */
+    font-synthesis-weight: none;
+  }
+
+  ::selection {
+    @apply bg-gold text-ink;
+  }
+
+  /* The focus ring is the one place gold is allowed to be loud. Keyboard users
+     get a visibly better ring than the browser default, not a suppressed one. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-gold ring-offset-2 ring-offset-ink rounded-sm;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Lenis holds the scroll position itself while it animates. */
+  html.lenis, html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+}
+
+@layer components {
+  /* ---------- Type ---------- */
+
+  .eyebrow {
+    @apply font-sans text-label uppercase text-gold/70 font-semibold;
+  }
+
+  .lede {
+    @apply text-body-lg text-cream/70 max-w-prose;
+  }
+
+  /* A hairline that reads as a rule, not a border. Gold fading to nothing. */
+  .rule {
+    @apply h-px w-full border-0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      theme('colors.outline.variant') 20%,
+      theme('colors.outline.variant') 80%,
+      transparent
+    );
+  }
+
+  /* ---------- Reveal primitives ----------
+     Both of these are the *end* state's opposite. GSAP animates to the natural
+     value, and if JS never runs, `.is-in` is applied by the no-JS fallback in
+     index.html so the page is never left invisible. */
+
+  .reveal-mask {
+    clip-path: inset(0 0 100% 0);
+    will-change: clip-path;
+  }
+  .reveal-mask.is-in {
+    clip-path: inset(0 0 0 0);
+  }
+
+  .split-line {
+    @apply block overflow-hidden;
+  }
+  .split-line > span {
+    @apply block;
+    transform: translateY(105%);
+    will-change: transform;
+  }
+  .split-line.is-in > span {
+    transform: translateY(0);
+  }
+
+  /* ---------- Buttons ---------- */
+
+  .btn {
+    @apply relative inline-flex items-center justify-center gap-3
+           font-sans text-label uppercase font-semibold
+           px-8 py-4 rounded-full
+           transition-[transform,background-color,color,border-color] duration-500 ease-lux
+           will-change-transform;
+  }
+
+  .btn-primary {
+    @apply btn bg-gold text-gold-ink hover:shadow-glow;
+  }
+
+  .btn-ghost {
+    @apply btn border border-outline-variant text-cream/80
+           hover:border-gold hover:text-gold;
+  }
+
+  /* The sweep is a pseudo-element rather than a background transition so it
+     wipes directionally instead of cross-fading. */
+  .btn-primary::after {
+    content: '';
+    @apply absolute inset-0 rounded-full bg-cream opacity-0
+           transition-opacity duration-500 ease-lux;
+    mix-blend-mode: overlay;
+  }
+  .btn-primary:hover::after {
+    @apply opacity-20;
+  }
+
+  /* ---------- Surfaces ---------- */
+
+  .card {
+    @apply relative overflow-hidden rounded-lg bg-ink-low
+           transition-[transform,background-color] duration-700 ease-lux;
+  }
+
+  .glass {
+    @apply bg-ink/70 backdrop-blur-xl border-b border-white/[0.06];
+  }
+
+  /* The vignette that keeps white type legible over the food footage. It is a
+     gradient rather than a flat scrim so the centre of frame stays bright. */
+  .cinema-scrim {
+    background:
+      linear-gradient(180deg, rgba(10, 10, 10, 0.85) 0%, transparent 28%, transparent 62%, rgba(10, 10, 10, 0.92) 100%),
+      radial-gradient(120% 80% at 50% 45%, transparent 30%, rgba(10, 10, 10, 0.6) 100%);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Marquee halves sit side by side and translate by exactly -50%, so the loop
+     is seamless without measuring anything in JS. */
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+
+  .grain {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
+  }
+}
+
+/* Motion is decoration here, never the only carrier of meaning — so it can all
+   be switched off. Reveals resolve to their end state via `.is-in`, applied
+   unconditionally by the components when reduced motion is set. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal-mask {
+    clip-path: none !important;
+  }
+  .split-line > span {
+    transform: none !important;
+  }
+}

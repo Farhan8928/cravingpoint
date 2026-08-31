@@ -1,0 +1,13 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# Frame sequences are generated from the raw PNG masters by
+# `npm run assets:frames`. ~20 MB of WebP that git has no business tracking —
+# regenerate them rather than committing them.
+public/frames
