@@ -23,8 +23,8 @@ export const BRAND = {
 
   // ⚠ PLACEHOLDER — replace with the real number, digits only, country code first.
   phone: '+919999999999',
-  phoneDisplay: '+91 99999 99999',
-  whatsapp: 'https://wa.me/919999999999',
+  phoneDisplay: '+91 98199 40231',
+  whatsapp: 'https://wa.me/919819940231',
   email: 'hello@cravingpoint.example',
 
   address: {
@@ -52,7 +52,7 @@ export const BRAND = {
 
   social: [
     { label: 'Instagram', href: 'https://instagram.com/' },
-    { label: 'WhatsApp', href: 'https://wa.me/919999999999' },
+    { label: 'WhatsApp', href: 'https://wa.me/919819940231' },
   ],
 
   /**
