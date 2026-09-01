@@ -122,8 +122,6 @@ export default function Collection() {
                   <Img
                     slug={entry.image}
                     alt={ALTS[entry.image] ?? ''}
-                    width={480}
-                    height={600}
                     max={480}
                     sizes="64px"
                     className="h-full w-full object-cover"
@@ -159,15 +157,12 @@ export default function Collection() {
               it and the row thumbnails do the job instead. */}
           <div className="hidden lg:col-span-5 lg:block">
             <div className="sticky top-28">
-              <div className="relative aspect-[4/5] w-full overflow-hidden bg-sunken shadow-frame">
+              <div className="relative aspect-square w-full overflow-hidden bg-sunken shadow-frame">
                 {collection.items.map((entry, i) => (
                   <Img
                     key={entry.image}
                     slug={entry.image}
                     alt={ALTS[entry.image] ?? ''}
-                    width={1000}
-                    height={1250}
-                    max={1200}
                     sizes="(min-width: 1024px) 40vw, 100vw"
                     // All frames are stacked and crossfaded on opacity rather
                     // than swapped by src — swapping means a decode on every

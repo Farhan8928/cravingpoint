@@ -41,9 +41,6 @@ export default function Manifesto() {
               <Img
                 slug="still-waffle"
                 alt="Warm chocolate being poured over a Belgian waffle"
-                width={1600}
-                height={900}
-                max={800}
                 sizes="(min-width: 768px) 30vw, 100vw"
                 className="aspect-[4/3] w-full object-cover"
               />

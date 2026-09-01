@@ -39,10 +39,7 @@ export default function About() {
                   <Img
                     slug="owner-portrait"
                     alt={ALTS['owner-portrait']}
-                    width={1000}
-                    height={1250}
                     sizes="(min-width: 768px) 40vw, 100vw"
-                    max={1200}
                     className="h-full w-full object-cover"
                   />
                 </Parallax>
@@ -56,8 +53,6 @@ export default function About() {
                   <Img
                     slug="owner-candid"
                     alt={ALTS['owner-candid']}
-                    width={1200}
-                    height={1200}
                     sizes="190px"
                     max={480}
                     className="h-full w-full object-cover"

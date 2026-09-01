@@ -41,39 +41,77 @@ const OUT = path.resolve('public/images');
  * photographs from different sources read as one shoot. Landscape and square are
  * for the pieces that are not menu items.
  */
+/**
+ * Dishes are square, not 4:5, and that choice is about resolution rather than
+ * taste. The sources are 1448x1086 landscape. Cropping those to 4:5 caps the
+ * output at height x 0.8 = **868px** — which is why the old 1200px renditions
+ * looked soft: they were upscaled from 868 and shipping invented pixels. A 1:1
+ * crop of the same file yields 1086px of real detail, and the Collection panel
+ * needs ~1056 device pixels at 2x DPR. Square covers it exactly; 4:5 could not.
+ */
+const DISH = { w: 1200, h: 1200 };
 const PORTRAIT = { w: 1000, h: 1250 };
 const LANDSCAPE = { w: 1600, h: 1200 };
 const SQUARE = { w: 1200, h: 1200 };
-const WIDTHS = [480, 800, 1200];
+
+/**
+ * Ladder of output widths. Every rung above a given source's native width is
+ * skipped rather than upscaled.
+ *
+ * The top rung used to be 1200, which was the actual cause of the softness: the
+ * Collection panel is ~40vw, so on a 1920 screen at 2x DPR the browser wants
+ * ~1536 device pixels and was upscaling a 1200px file to fill it. The sources
+ * are 1448px, so that detail existed and was simply being thrown away.
+ *
+ * 2400 exists for the founder portrait, whose source is 3024x4032 — the only
+ * asset here with real resolution to give.
+ */
+const WIDTHS = [480, 800, 1200, 1600, 2000, 2400];
+
+/**
+ * Quality per rung. Large renditions are displayed large and carry the
+ * impression of quality, so they get the most; the 480 thumbnail is 64px on
+ * screen and cannot spend bits usefully.
+ *
+ * Reference point: the Gauri Furnishing build the client rates as excellent uses
+ * q80 at its 1600 top rung. These sit at or above that everywhere it shows.
+ */
+const QUALITY = (w) => (w >= 1600 ? 86 : w >= 1200 ? 84 : w >= 800 ? 80 : 74);
 
 const SOURCES = {
   // ---- Menu, from the client's own product photography ----
   'dish-waffle': {
+    ratio: DISH,
     file: 'waffle.png',
     aiGenerated: true,
     alt: 'A Belgian waffle slice under a heavy chocolate drizzle',
   },
   'dish-tub': {
+    ratio: DISH,
     file: 'tubs.png',
     aiGenerated: true,
     alt: 'Kraft tubs packed with chocolate chunks, wafers and sauce',
   },
   'dish-sundae': {
+    ratio: DISH,
     file: 'sundaes.png',
     aiGenerated: true,
     alt: 'Sundaes in glass coupes with cream, wafer, nuts and a cherry',
   },
   'dish-doughnut': {
+    ratio: DISH,
     file: 'doughnuts.png',
     aiGenerated: true,
     alt: 'Cream-filled doughnuts dusted with sugar on a plate',
   },
   'dish-wrap': {
+    ratio: DISH,
     file: 'wrap.png',
     aiGenerated: true,
     alt: 'A chicken wrap cut open, showing grilled strips, onion and cucumber',
   },
   'dish-combo': {
+    ratio: DISH,
     file: 'combo.png',
     aiGenerated: true,
     alt: 'The combo: waffle slices, a chicken wrap, a loaded tub, mini pancakes and drinks',
@@ -89,17 +127,17 @@ const SOURCES = {
 
   // ---- The founder. Real photographs. ----
   'owner-portrait': {
-    file: 'owner-1.jpeg',
+    file: 'owner-2.jpeg',
     ratio: PORTRAIT,
     // Portraits crop from the top, never by salience. `attention` scores
     // contrast, and on a standing shot the brightest, busiest region is the
     // shirt — it cropped this man's head clean off. Heads live at the top of a
     // portrait; that is a rule, not a heuristic.
     position: 'top',
-    alt: 'The founder of Craving Point .88, smiling outside the shop',
+    alt: 'The founder of Craving Point .88, outside the shop',
   },
   'owner-candid': {
-    file: 'owner-2.jpeg',
+    file: 'owner-1.jpeg',
     ratio: SQUARE,
     position: 'top',
     alt: 'The founder of Craving Point .88',
@@ -131,16 +169,40 @@ async function fetchRemote(slug, id) {
 
 async function emit(slug, srcFile, cfg) {
   const ratio = cfg.ratio || PORTRAIT;
-  for (const w of WIDTHS) {
+  const meta = await sharp(srcFile).metadata();
+
+  // A `cover` resize will happily upscale past the source, which costs bytes and
+  // returns a softer image than the original — the worst of both. The ladder is
+  // capped at what the file can actually supply on its narrower axis.
+  const nativeCap = Math.floor(Math.min(meta.width, (meta.height * ratio.w) / ratio.h));
+  const widths = WIDTHS.filter((w) => w <= nativeCap);
+
+  /**
+   * Always finish on the native cap.
+   *
+   * A fixed ladder leaves a hole whenever a source lands between two rungs: the
+   * square dish crop tops out at 1086px, the ladder steps 800 -> 1200, and 1200
+   * is rightly skipped as upscale — so the best rendition shipped was 800px,
+   * worse than before the resolution work. Appending the true ceiling means every
+   * asset ends on exactly the detail it has, whatever the ladder does.
+   */
+  const top = widths[widths.length - 1] ?? 0;
+  if (nativeCap > top + 32) widths.push(nativeCap);
+  if (!widths.length) widths.push(nativeCap);
+
+  for (const w of widths) {
     const h = Math.round((ratio.h / ratio.w) * w);
     await sharp(srcFile)
       // `attention` crops around the most salient region rather than the
-      // geometric centre — on a plated dish that is the food, and on a portrait
-      // it is the face.
+      // geometric centre — on a plated dish that is the food. Portraits override
+      // it with `position: 'top'`; see the note on owner-portrait.
       .resize(w, h, { fit: 'cover', position: cfg.position || sharp.strategy.attention })
-      .webp({ quality: 82, effort: 5 })
+      // effort 6 buys a few percent over 5 at build time only.
+      .webp({ quality: QUALITY(w), effort: 6 })
       .toFile(path.join(OUT, `${slug}-${w}.webp`));
   }
+
+  return { widths, ratio };
 }
 
 /**
@@ -215,25 +277,72 @@ async function main() {
   }
 
   const alts = {};
+  const manifest = {};
 
   for (const [slug, cfg] of Object.entries(SOURCES)) {
-    await emit(slug, path.join(SRC, cfg.file), cfg);
+    const { widths, ratio } = await emit(slug, path.join(SRC, cfg.file), cfg);
     alts[slug] = cfg.alt;
-    console.log(`ok  ${slug}${cfg.aiGenerated ? '  (AI-generated source)' : ''}`);
+    manifest[slug] = { widths, w: ratio.w, h: ratio.h, alt: cfg.alt };
+    console.log(
+      `ok  ${slug.padEnd(16)} ${widths.join('/')}` +
+        `${cfg.aiGenerated ? '   (AI-generated source)' : ''}`
+    );
   }
 
   for (const [slug, cfg] of Object.entries(REMOTE)) {
-    await emit(slug, await fetchRemote(slug, cfg.photo), cfg);
+    const { widths, ratio } = await emit(slug, await fetchRemote(slug, cfg.photo), cfg);
     alts[slug] = cfg.alt;
-    console.log(`ok  ${slug}  (unsplash)`);
+    manifest[slug] = { widths, w: ratio.w, h: ratio.h, alt: cfg.alt };
+    console.log(`ok  ${slug.padEnd(16)} ${widths.join('/')}   (unsplash)`);
   }
 
   await buildLogo();
+
+  /**
+   * Remove renditions this run did not write.
+   *
+   * Widths are now derived from each source rather than fixed, so changing a
+   * ratio or a ladder silently strands the old files — and a stale
+   * `dish-waffle-1200.webp` from a previous 4:5 crop is an upscaled, wrongly
+   * cropped image sitting in the deploy under a plausible name. Only `dish-`,
+   * `gift-`, `owner-` and `logo` are swept: `still-*` and `poster-*` belong to
+   * process-frames.mjs and must survive a run of this script.
+   */
+  const expected = new Set([
+    ...Object.entries(manifest).flatMap(([slug, m]) =>
+      m.widths.map((w) => `${slug}-${w}.webp`)
+    ),
+    'logo-256.webp',
+    'logo-512.webp',
+    'logo.png',
+  ]);
+  const owned = /^(dish-|gift-|owner-|logo)/;
+  const orphans = fs
+    .readdirSync(OUT)
+    .filter((f) => owned.test(f) && !expected.has(f));
+  for (const f of orphans) fs.unlinkSync(path.join(OUT, f));
+  if (orphans.length) console.log(`
+  removed ${orphans.length} stale rendition(s)`);
 
   fs.writeFileSync(
     path.resolve('src/data/alts.js'),
     `// AUTO-GENERATED by scripts/process-images.mjs — do not edit by hand.\n` +
       `export const ALTS = ${JSON.stringify(alts, null, 2)};\n`
+  );
+
+  /**
+   * The renditions this run actually wrote, with each asset's intrinsic aspect.
+   *
+   * <Img> builds its srcset from this rather than from a hardcoded ladder, so it
+   * can never advertise a file that does not exist — the previous list carried a
+   * 2000px rung that was never generated for any asset. Widths are now derived
+   * per source, which makes a generated manifest the only way the two can stay
+   * in step.
+   */
+  fs.writeFileSync(
+    path.resolve('src/data/images.js'),
+    `// AUTO-GENERATED by scripts/process-images.mjs — do not edit by hand.\n` +
+      `export const IMAGES = ${JSON.stringify(manifest, null, 2)};\n`
   );
 
   const ai = Object.entries(SOURCES).filter(([, c]) => c.aiGenerated);

@@ -46,11 +46,11 @@ export function pickTier() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   // Saving data is an explicit request; it outranks the width heuristic.
   if (navigator.connection?.saveData) return 'w720';
-  return window.innerWidth * dpr > 1100 ? 'w1440' : 'w720';
+  return window.innerWidth * dpr > 1100 ? 'w1280' : 'w720';
 }
 
-/** The pixel width each tier actually decodes to — the masters cap at 1280. */
-export const TIER_WIDTH = { w1440: 1280, w720: 720 };
+/** The pixel width each tier decodes to. The masters are 720p; this is the ceiling. */
+export const TIER_WIDTH = { w1280: 1280, w720: 720 };
 
 const pad = (n) => String(n).padStart(4, '0');
 

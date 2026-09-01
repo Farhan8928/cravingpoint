@@ -560,6 +560,76 @@ the shirt — it cropped the founder's head clean off on the first pass. Heads a
 at the top of a portrait; that is a rule, not a heuristic, and `position: 'top'`
 encodes it.
 
+---
+
+## Image quality
+
+Benchmarked against the Gauri Furnishing build (1600px top rung at q80). Three
+real problems were found and fixed; one request could not be met and the reason
+matters.
+
+### 4K is not achievable, and forcing it makes things worse
+
+| Source | Native resolution |
+|---|---|
+| Frame masters | **1280x720** — 720p |
+| Dish photography | 1448x1086 max |
+| Founder portrait | 3024x4032 ✓ |
+
+4K is 3840x2160 — nine times the pixels present in the footage. Upscaling adds
+no detail; it ships a larger, softer file. Every rung above a source's native
+width is now skipped rather than invented.
+
+### The actual cause of the softness
+
+The dish sources are **1448x1086 landscape**. Cropping those to the 4:5 portrait
+the layout used capped them at `height x 0.8 =` **868px** — so the 1200px files
+being served were upscaled from 868 and shipping invented pixels. That is why
+they looked soft at exactly the size they were meant to shine.
+
+Dishes are now cropped **square**, which yields 1086px of real detail from the
+same file. The Collection panel needs ~1056 device pixels at 2x DPR; square
+covers it, 4:5 could not. Verified: the browser now selects
+`dish-waffle-1086.webp` for a slot requiring 928 device pixels.
+
+### Every asset finishes on its native ceiling
+
+A fixed ladder leaves a hole whenever a source lands between rungs — the square
+crop tops out at 1086, the ladder steps 800 → 1200, and 1200 is correctly
+skipped as upscale, so the best rendition shipped was **800px**: worse than
+before the work started. The ladder now always appends the true cap:
+
+```
+dish-waffle      480 / 800 / 1086      owner-portrait  480 … 2400 / 3024
+dish-sundae      480 / 800 / 1200/1254 owner-candid    480 / 632
+gift-boxes       480 / 800 / 1200/1448 still-*         480 / 800 / 1200/1280
+```
+
+### Frames
+
+Quality was q70 desktop / q66 mobile — well under the q80 reference, and low
+enough to band in the dark gradient-heavy areas this footage is full of. Now
+**q84 / q80**, and the tier is renamed `w1280` from the misleading `w1440`
+(it always capped at the 1280px master).
+
+A device downloads one tier: **16.5 MB desktop, 7.3 MB mobile**, up from ~11 MB
+and ~5 MB. The frames *are* the site, they stream progressively behind the
+preloader, and they are cached 30 days.
+
+### Two structural fixes this exposed
+
+**`<Img>` builds its srcset from a generated manifest.** It previously carried a
+hardcoded `[480, 800, 1200, 2000]` and relied on every call site passing a
+correct `max`. No asset ever had a 2000px rendition, so the browser was free to
+choose a URL that 404s. Both pipelines now declare exactly what they wrote
+(`src/data/images.js`, `STILLS` in `src/data/sequences.js`) and `<Img>` reads
+that, so markup and disk cannot drift.
+
+**The pipeline sweeps its own orphans.** Widths are derived per source now, so
+changing a ratio strands old files — and a stale `dish-waffle-1200.webp` from
+the previous 4:5 crop is a wrongly-cropped upscale sitting in the deploy under a
+plausible name. Ten were removed on the first run.
+
 ## ⚠ Before this goes live
 
 **1. Three facts are still missing, and the About section is waiting on them.**

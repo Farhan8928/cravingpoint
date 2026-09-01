@@ -83,10 +83,7 @@ export default function Gifting() {
                   <Img
                     slug="gift-boxes"
                     alt={ALTS['gift-boxes']}
-                    width={1600}
-                    height={1200}
                     sizes="(min-width: 768px) 58vw, 100vw"
-                    max={1200}
                     className="h-full w-full object-cover"
                   />
                 </Parallax>
@@ -100,8 +97,6 @@ export default function Gifting() {
                   <Img
                     slug="gift-detail"
                     alt={ALTS['gift-detail']}
-                    width={1000}
-                    height={1250}
                     sizes="220px"
                     max={480}
                     className="h-full w-full object-cover"

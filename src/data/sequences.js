@@ -18,3 +18,64 @@ export const SEQUENCES = {
     "label": "The grill wrap, folded to order"
   }
 };
+
+// Renditions written for the stills lifted out of the footage. <Img>
+// merges this with the set from scripts/process-images.mjs, so both
+// pipelines declare what they wrote and neither can drift from disk.
+export const STILLS = {
+  "still-splash": {
+    "widths": [
+      480,
+      800,
+      1200,
+      1280
+    ],
+    "w": 1600,
+    "h": 900,
+    "alt": ""
+  },
+  "still-waffle": {
+    "widths": [
+      480,
+      800,
+      1200,
+      1280
+    ],
+    "w": 1600,
+    "h": 900,
+    "alt": ""
+  },
+  "still-pour": {
+    "widths": [
+      480,
+      800,
+      1200,
+      1280
+    ],
+    "w": 1600,
+    "h": 900,
+    "alt": ""
+  },
+  "still-wrap": {
+    "widths": [
+      480,
+      800,
+      1200,
+      1280
+    ],
+    "w": 1600,
+    "h": 900,
+    "alt": ""
+  },
+  "still-grill": {
+    "widths": [
+      480,
+      800,
+      1200,
+      1280
+    ],
+    "w": 1600,
+    "h": 900,
+    "alt": ""
+  }
+};
