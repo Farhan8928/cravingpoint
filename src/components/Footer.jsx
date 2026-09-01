@@ -20,6 +20,14 @@ export default function Footer() {
       <div className="mx-auto max-w-container px-gutter">
         <div className="grid gap-12 pb-16 md:grid-cols-12">
           <div className="md:col-span-5">
+            <img
+              src="/images/logo-256.webp"
+              alt={`${BRAND.full} logo`}
+              width={140}
+              height={116}
+              loading="lazy"
+              className="mb-6 h-20 w-auto"
+            />
             <p className="max-w-sm font-display text-headline text-ink">{BRAND.description}</p>
           </div>
 

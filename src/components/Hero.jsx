@@ -89,7 +89,7 @@ export default function Hero({ onProgress }) {
               data-fade
               className="max-w-sm translate-y-4 text-body-lg text-film-muted opacity-0"
             >
-              Poured by hand. Marked on charcoal. Four minutes, every time.
+              Waffles off the iron. Tubs filled to the rim. Four minutes, every time.
             </p>
 
             <div data-fade className="translate-y-4 opacity-0">

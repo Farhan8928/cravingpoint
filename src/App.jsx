@@ -10,6 +10,7 @@ import Hero from './components/Hero';
 import Manifesto from './components/Manifesto';
 import Marquee from './components/Marquee';
 import Collection from './components/Collection';
+import About from './components/About';
 import Craft from './components/Craft';
 import Gifting from './components/Gifting';
 import Visit from './components/Visit';
@@ -86,6 +87,7 @@ export default function App() {
         <Manifesto />
         <Marquee />
         <Collection />
+        <About />
         <Craft />
         <Gifting />
         <Visit />

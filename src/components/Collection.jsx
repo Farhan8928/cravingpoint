@@ -55,7 +55,7 @@ export default function Collection() {
           <SplitLines
             as="h2"
             className="font-display text-display-lg text-ink md:col-span-7"
-            lines={['Brownie. Waffle.', 'Ganache. Gold.']}
+            lines={['Waffle. Tub.', 'Sundae. Wrap.']}
           />
           <Reveal className="md:col-span-5" delay={0.15}>
             <p className="lede">{collection.blurb}</p>

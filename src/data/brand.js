@@ -19,12 +19,12 @@ export const BRAND = {
   // says something only this shop can say.
   tagline: 'Made when you ask, not before',
   description:
-    'Brownies, waffles and charcoal wraps in Cheeta Camp, Trombay. Made when you ask, not before.',
+    'Waffles, loaded tubs and charcoal wraps in Cheeta Camp, Trombay. Made when you ask, not before.',
 
-  // ⚠ PLACEHOLDER — replace with the real number, digits only, country code first.
   phone: '+919819940231',
   phoneDisplay: '+91 98199 40231',
   whatsapp: 'https://wa.me/919819940231',
+  // ⚠ PLACEHOLDER — replace with the real address or drop it from the footer.
   email: 'hello@cravingpoint.example',
 
   address: {
@@ -44,6 +44,32 @@ export const BRAND = {
   mapsPlaceId: '0x3be7c5935772838b:0x126007ebe0ae162e',
   mapsDirections:
     'https://www.google.com/maps/dir//Craving+Point,+SHOP+NO.+29,+F-SECTOR,+Cheeta+Camp+Rd,+near+Noor+Masjid,+Cheeta+Camp,+Trombay,+Mumbai,+Maharashtra+400088/@19.0394646,72.9470021,17z/data=!4m8!4m7!1m0!1m5!1m1!1s0x3be7c5935772838b:0x126007ebe0ae162e!2m2!1d72.9470021!2d19.0394646',
+
+  /**
+   * The founder, for the About section.
+   *
+   * ⚠ THREE FIELDS STILL NEED THE CLIENT'S ANSWER. They are marked `null`
+   * rather than filled with a plausible guess, and the About section is built to
+   * *omit* whatever is still null rather than print a placeholder. A fabricated
+   * name, founding year or quote attributed to a real person is worse than a
+   * shorter section — it is a false statement about someone who exists, sitting
+   * next to their photograph.
+   *
+   * Fill these three in and the section completes itself. Nothing else to touch.
+   */
+  founder: {
+    /** e.g. 'Farhan Shaikh' — the name shown under the portrait. */
+    name: null,
+    /** e.g. 'Founder' or 'Owner'. Falls back to 'Founder' if left null. */
+    role: 'Founder',
+    /** e.g. 2023 — the year the counter opened. Omitted entirely if null. */
+    since: null,
+    /**
+     * One or two sentences in his own words: why he started it, what he wanted
+     * the counter to be. Omitted entirely if null.
+     */
+    quote: null,
+  },
 
   hours: [
     { days: 'Monday to Thursday', time: '12:00 – 23:30' },
@@ -65,7 +91,8 @@ export const BRAND = {
 };
 
 export const NAV = [
-  { label: 'Collection', href: '#collection' },
+  { label: 'Menu', href: '#collection' },
+  { label: 'About', href: '#about-us' },
   { label: 'The Grill', href: '#craft' },
   { label: 'Gifting', href: '#gifting' },
   { label: 'Visit', href: '#visit' },

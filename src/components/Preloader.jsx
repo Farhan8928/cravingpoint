@@ -94,10 +94,20 @@ export default function Preloader({ progress = 0, onDone }) {
     >
       <div ref={innerRef} className="flex h-full flex-col justify-between px-gutter py-12">
         <div className="flex items-start justify-between">
-          <span className="font-display text-lg font-semibold text-ink">
-            Craving Point <span className="text-accent">.88</span>
+          {/* The client's own mark, given room to be itself. The header keeps the
+              typographic wordmark instead — the logo is a glossy 3D drawing and
+              a 20px-tall version of it in a minimal rail reads as a clipart
+              sticker, so each is used where it actually works. */}
+          <img
+            src="/images/logo-256.webp"
+            alt=""
+            width={96}
+            height={80}
+            className="h-16 w-auto md:h-20"
+          />
+          <span className="font-mono text-label-sm uppercase text-muted">
+            Cheeta Camp, Trombay
           </span>
-          <span className="text-label-sm uppercase text-muted">Trombay, Mumbai</span>
         </div>
 
         <div className="flex items-end justify-between gap-8">

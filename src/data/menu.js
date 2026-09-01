@@ -1,15 +1,26 @@
 /**
- * The menu, split by counter rather than by course.
+ * The menu, split by counter.
  *
- * `image` names an asset emitted by scripts/process-images.mjs. Every item has
- * one — that is what lets the Collection section be a real editorial layout
- * instead of a list with a few photographs floating over it.
+ * Rewritten from the client's own product photography. The previous version was
+ * largely invented — "Signature Sea Salt Brownie", "Gold Leaf Petit Fours",
+ * "Molten Chocolate Jar" — and described a patisserie this shop is not. The real
+ * counter is waffle slices, kraft tubs loaded with chocolate, sundaes,
+ * cream doughnuts and a chicken wrap. Writing a menu the shop does not serve is
+ * worse than a short one.
  *
- * ⚠ The dish photography is currently Unsplash placeholder, not Craving Point's
- * own food. See CREDITS.md. Swapping it is a one-line change per dish in
- * scripts/process-images.mjs; nothing here needs to move.
+ * ⚠ TWO THINGS THE CLIENT STILL NEEDS TO CONFIRM:
  *
- * ⚠ Prices are illustrative. Confirm against the current counter menu.
+ *   1. **Prices are indicative**, not quoted. The photographs show the products
+ *      but not what they cost. The page carries a visible "confirm at the
+ *      counter" line for exactly this reason — replace these with the real
+ *      counter prices before that line can come off.
+ *   2. **This is only what the photographs show.** If the counter serves more —
+ *      shakes, brownies, other wraps — add them here with a photo each; the
+ *      Collection section is driven entirely by this file.
+ *
+ * `image` names an asset emitted by scripts/process-images.mjs. Every item needs
+ * one: the layout uses a thumbnail on mobile and a sticky panel on desktop, and
+ * an item without a photograph would render as a hole in both.
  */
 export const COLLECTIONS = [
   {
@@ -20,46 +31,32 @@ export const COLLECTIONS = [
       'Everything is finished at the pass. If it can take warm chocolate, it gets warm chocolate.',
     items: [
       {
-        name: 'Signature Sea Salt Brownie',
-        note: 'Molten dark chocolate, Atlantic sea salt, served warm',
-        price: '₹280',
+        name: 'Belgian Waffle Slice',
+        note: 'Cut thick, drizzled warm, eaten off the board',
+        price: '₹180',
         tags: ['Signature'],
-        image: 'dish-brownie',
-      },
-      {
-        name: 'Belgian Waffle Cup',
-        note: 'Waffle bites, brownie chunk, hand-poured couverture',
-        price: '₹320',
-        tags: ['Bestseller'],
         image: 'dish-waffle',
       },
       {
-        name: 'Molten Chocolate Jar',
-        note: 'Layered ganache and sponge, taken to the table still warm',
-        price: '₹300',
-        tags: [],
-        image: 'dish-molten-jar',
+        name: 'The Loaded Tub',
+        note: 'Chocolate chunk, Ferrero, Oreo or caramel. Filled to the rim',
+        price: '₹220',
+        tags: ['Bestseller'],
+        image: 'dish-tub',
       },
       {
-        name: 'Vanilla Bean Sundae',
-        note: 'Madagascar vanilla, dark chocolate ribbon, candied pecan',
-        price: '₹260',
+        name: 'Sundae',
+        note: 'Cream, crushed nuts, wafer, sauce and a cherry on top',
+        price: '₹160',
         tags: [],
         image: 'dish-sundae',
       },
       {
-        name: 'Buttermilk Pancake Stack',
-        note: 'Four high, maple butter, seasonal fruit',
-        price: '₹290',
+        name: 'Cream Doughnut',
+        note: 'Sugar-dusted, filled to order, still soft',
+        price: '₹90',
         tags: [],
-        image: 'dish-pancakes',
-      },
-      {
-        name: 'Gold Leaf Petit Fours',
-        note: 'Delicate chocolate ganache, 24k gold leaf. By order only',
-        price: '₹640',
-        tags: ['Limited'],
-        image: 'dish-petitfours',
+        image: 'dish-doughnut',
       },
     ],
   },
@@ -67,36 +64,21 @@ export const COLLECTIONS = [
     id: 'grill',
     eyebrow: 'The Hot Counter',
     title: 'The Grill',
-    blurb:
-      'Marked on charcoal, folded to order, cut while the tawa is still loud.',
+    blurb: 'Marked on charcoal, folded to order, cut while the tawa is still loud.',
     items: [
       {
-        name: 'Signature Chicken Wrap',
-        note: 'Charcoal-grilled thigh, red onion, cucumber, house sauce',
-        price: '₹260',
+        name: 'Chicken Wrap',
+        note: 'Grilled strips, red onion, cucumber, house sauce',
+        price: '₹160',
         tags: ['Signature'],
         image: 'dish-wrap',
       },
       {
-        name: 'Peri Peri Grill Wrap',
-        note: 'Double-marinated, finished on the flame',
-        price: '₹280',
-        tags: ['Hot'],
-        image: 'dish-periperi',
-      },
-      {
-        name: 'Cheese Melt Wrap',
-        note: 'Three cheeses, caramelised onion, pressed till it gives',
-        price: '₹250',
-        tags: [],
-        image: 'dish-cheesemelt',
-      },
-      {
-        name: 'Loaded Fries',
-        note: 'Grill trimmings, molten cheese, house seasoning',
-        price: '₹220',
-        tags: [],
-        image: 'dish-fries',
+        name: 'The Combo',
+        note: 'Wrap, waffle slice, a loaded tub and a cold drink',
+        price: '₹420',
+        tags: ['Sharing'],
+        image: 'dish-combo',
       },
     ],
   },

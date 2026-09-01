@@ -1,8 +1,8 @@
 # Craving Point .88
 
-Official website for **Craving Point .88** — a dessert atelier and grill at Shop No. 29, F-Sector, Cheeta Camp Road, Trombay, Mumbai.
+Official website for **Craving Point .88** — a dessert and grill counter at Shop No. 29, F-Sector, Cheeta Camp Road, Trombay, Mumbai.
 
-A single scroll-driven page built around two film sequences scrubbed frame-by-frame on canvas: a chocolate pour over the signature spread, and a chicken wrap built to order on the grill.
+A single scroll-driven page built around two film sequences scrubbed frame-by-frame on canvas: chocolate poured over waffles and brownies, and a chicken wrap built to order on the grill.
 
 Ships **light and dark themes**, light by default.
 
@@ -106,7 +106,7 @@ written, zero appetite. Rewritten to the same register:
 | Section | Was | Now |
 |---|---|---|
 | Manifesto | Dessert is not an afterthought. | **Cocoa. Butter. Salt. Fire.** |
-| Collection | Two counters, one obsession. | **Brownie. Waffle. Ganache. Gold.** |
+| Collection | Two counters, one obsession. | **Waffle. Tub. Sundae. Wrap.** |
 | Gifting | Gifting that arrives before you do. | **Twenty boxes. Three days. One van.** |
 | Visit | Find the counter. | **Cheeta Camp. Open till one.** |
 
@@ -126,7 +126,9 @@ minutes · Open till one*.
   assembled. It is a wide face, so the label tracking came down from
   0.18em/0.22em to 0.06em/0.08em — the old values were tuned for Inter and read
   as broken-apart lettering in mono.
-- **Inter Tight** — body copy only, where mono would be a readability tax.
+- **Instrument Sans** — body copy only, where mono would be a readability tax.
+  (Was Inter Tight; Inter is the single most-cited typographic tell of a
+  generated site.)
 
 ### The header
 
@@ -299,9 +301,10 @@ and the grain is static.
 
 ```
 index.html            document shell, meta, JSON-LD, no-JS fallback
+assets-src/client/     the client's own photographs, logo and portraits
 scripts/
   process-frames.mjs   PNG masters -> WebP sequences + stills + manifest
-  process-images.mjs   photography -> cropped WebP sets + alts + CREDITS.md
+  process-images.mjs   assets-src -> cropped WebP sets, logo, favicons, CREDITS
   audit-contrast.mjs   WCAG AA check over every text node, both themes
   prerender.mjs        bakes rendered markup into dist/index.html
 src/
@@ -495,12 +498,53 @@ What would fix it, in rough order of impact: a photo of whoever runs the counter
 one sentence in their own words about why the shop exists, the real founding
 year, and two or three genuine customer lines.
 
+---
+
+## Client assets
+
+`assets-src/client/` holds the originals the client supplied, committed so
+`npm run assets:images` is reproducible anywhere. That is the same lesson the
+frame masters taught: a build step reading from one person's Downloads folder
+cannot run on a deploy host.
+
+**The logo** is a glossy 3D mark, a deliberate style clash with the editorial
+design around it. Rather than redraw someone's brand asset, it is used where it
+has room to be itself — the preloader, the footer and the favicons — while the
+header keeps the typographic wordmark. A 20px-tall version of that artwork in a
+minimal rail reads as a clipart sticker; at 80px on the dark footer it reads as
+a sign. Its white JPEG background is keyed out in
+[`scripts/process-images.mjs`](scripts/process-images.mjs) with a soft alpha ramp
+rather than a hard threshold, which is what stops a jagged halo on the edges.
+
+**The portraits crop from the top, never by salience.** sharp's `attention`
+strategy scores contrast, and on a standing shot the brightest, busiest region is
+the shirt — it cropped the founder's head clean off on the first pass. Heads are
+at the top of a portrait; that is a rule, not a heuristic, and `position: 'top'`
+encodes it.
+
 ## ⚠ Before this goes live
 
-**1. Photography is placeholder.** All twelve photos are Unsplash stand-ins, not
-Craving Point's own — see [CREDITS.md](CREDITS.md). Swapping one is a single
-entry in [`scripts/process-images.mjs`](scripts/process-images.mjs); nothing in
-the components or the menu data moves.
+**1. Three facts are still missing, and the About section is waiting on them.**
+In [`src/data/brand.js`](src/data/brand.js) under `founder`:
+
+| Field | Needs |
+|---|---|
+| `name` | The founder's name, shown under his portrait |
+| `since` | The year the counter opened |
+| `quote` | One or two sentences in his own words |
+
+They are `null`, not filled with a guess, and About **omits** whatever is still
+null rather than printing a placeholder. A fabricated name or founding year
+sitting beside a real person's photograph is a false statement about someone who
+exists — worse than a shorter section. Fill the three in and the section
+completes itself; nothing else to touch.
+
+**2. The dish photography is AI-generated.** The client supplied it and chose to
+use it; the source files were named `ChatGPT Image ...`. It is used because it
+shows *this shop's actual products* — the kraft tubs match the client's own film
+footage — which beats a stock photograph of a stranger's dessert. It is recorded
+per-asset in [CREDITS.md](CREDITS.md) and should be replaced the moment real
+product shots exist. The two founder portraits and the logo are genuine.
 
 Note the gifting section deliberately does **not** use the client's own footage.
 That film is AI-generated, and the wide dessert-table frame that was there read
@@ -524,8 +568,12 @@ Camp Road, near Noor Masjid, Cheeta Camp, Trombay, Mumbai 400088
 form so it works on first deploy; swap in a Maps Embed API URL if you want the
 branded pin.
 
-**3. Confirm the copy.** Prices in [`src/data/menu.js`](src/data/menu.js) are
-illustrative, as are the opening hours.
+**3. Prices are indicative, and the menu may be short.** The photographs show
+the products but not what they cost, which is why the page carries a visible
+"confirm at the counter" line. The menu in
+[`src/data/menu.js`](src/data/menu.js) is only what the supplied photographs
+show — six items. If the counter serves more, add them there with a photo each;
+the whole Collection section is driven by that file.
 
 ---
 
