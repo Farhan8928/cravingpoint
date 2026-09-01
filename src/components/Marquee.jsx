@@ -53,6 +53,31 @@ export default function Marquee({ words = MARQUEE_WORDS, className = '' }) {
     };
   }, []);
 
+  /**
+   * The separator is drawn, not typed.
+   *
+   * It was `✳` (U+2733). That codepoint has `Emoji=Yes`, so although its
+   * *default* presentation is text, phones resolve it from the system colour
+   * font — Noto Color Emoji on Android, Apple Color Emoji on iOS — and it
+   * rendered as a **green emoji tile** on real devices. Desktop Chrome on
+   * Windows picks Segoe UI Symbol and shows the intended glyph, which is exactly
+   * why it survived every check: the bug is invisible on the platform the tests
+   * run on.
+   *
+   * `U+FE0E` would force text presentation, but it depends on the font stack
+   * honouring it. An inline SVG has no font dependency at all and takes
+   * `currentColor`, so it is identical on every device by construction.
+   */
+  const star = (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-3 w-3 shrink-0 fill-current text-accent md:h-4 md:w-4"
+    >
+      <path d="M12 0l1.9 8.2L22 6.3l-5.5 6 5.5 6-8.1-1.9L12 24l-1.9-8.2L2 17.7l5.5-6-5.5-6 8.1 1.9z" />
+    </svg>
+  );
+
   const row = (
     <div className="flex shrink-0 items-center">
       {words.map((word) => (
@@ -60,9 +85,7 @@ export default function Marquee({ words = MARQUEE_WORDS, className = '' }) {
           <span className="whitespace-nowrap px-7 font-display text-3xl text-ink md:text-5xl">
             {word}
           </span>
-          <span aria-hidden="true" className="text-xl text-accent">
-            ✳
-          </span>
+          {star}
         </span>
       ))}
     </div>

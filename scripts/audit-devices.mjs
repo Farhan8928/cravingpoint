@@ -140,6 +140,47 @@ function collect(minTap, minType) {
     if (r.left < -2) add('offscreen', `${el.id || el.tagName} starts ${Math.round(-r.left)}px left of the viewport`, el);
   });
 
+  /**
+   * Characters that a phone will draw from its colour-emoji font.
+   *
+   * This check exists because `✳` (U+2733) shipped as a **green emoji tile** on
+   * Android and iOS while looking perfectly correct in every desktop test. Its
+   * default presentation is text, but the system emoji font claims the codepoint
+   * and sits earlier in the mobile fallback chain — so the defect is invisible on
+   * the platform the tests run on, and no amount of screenshotting Windows Chrome
+   * would ever have caught it.
+   *
+   * Scanning the source is therefore the only reliable check. A trailing U+FE0E
+   * (text presentation selector) counts as handled; drawing the mark as SVG,
+   * which is what the marquee does now, avoids the question entirely.
+   */
+  const EMOJI_RANGES = [
+    [0x203c, 0x2049], [0x2122, 0x2122], [0x2139, 0x2139], [0x2194, 0x21aa],
+    [0x231a, 0x231b], [0x2328, 0x2328], [0x23cf, 0x23fa], [0x24c2, 0x24c2],
+    [0x25aa, 0x25ab], [0x25b6, 0x25b6], [0x25c0, 0x25c0], [0x25fb, 0x25fe],
+    [0x2600, 0x27bf], [0x2934, 0x2935], [0x2b00, 0x2bff], [0x3030, 0x3030],
+    [0x303d, 0x303d], [0x3297, 0x3299], [0x1f000, 0x1faff],
+  ];
+  const isEmojiCapable = (cp) => EMOJI_RANGES.some(([a, b]) => cp >= a && cp <= b);
+
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    const parent = node.parentElement;
+    if (!parent || !visible(parent)) continue;
+    const text = node.nodeValue || '';
+    for (let i = 0; i < text.length; i += 1) {
+      const cp = text.codePointAt(i);
+      if (!isEmojiCapable(cp)) continue;
+      // U+FE0E immediately after forces text presentation.
+      if (text[i + 1] === '︎') continue;
+      add(
+        'emoji-font',
+        `U+${cp.toString(16).toUpperCase()} "${text.trim().slice(0, 24)}" may render as a colour emoji on mobile`,
+        parent
+      );
+    }
+  }
+
   return issues;
 }
 
