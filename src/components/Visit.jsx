@@ -111,7 +111,7 @@ export default function Visit() {
               href={directions}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-block font-mono text-label-sm uppercase text-muted transition-colors hover:text-accent"
+              className="link-inline mt-4 text-muted hover:text-accent"
             >
               Open in Google Maps →
             </a>

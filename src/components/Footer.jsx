@@ -101,7 +101,7 @@ export default function Footer() {
             <button
               type="button"
               onClick={() => scrollTo('#top', { offset: 0 })}
-              className="font-mono text-label-sm uppercase transition-colors duration-300 hover:text-white"
+              className="link-inline hover:text-white"
             >
               Back to top ↑
             </button>

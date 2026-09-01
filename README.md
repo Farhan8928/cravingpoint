@@ -383,7 +383,7 @@ npm i --no-save puppeteer-core       # dev-only, not in package.json
 npm run verify                       # another terminal — audit + smoke
 ```
 
-`npm run verify` runs both checks below. Run it before showing work to anyone.
+`npm run verify` runs all three checks below. Run it before showing work to anyone.
 
 ### `npm run audit` — contrast
 
@@ -409,6 +409,44 @@ version measured on load, saw an empty page, and reported a clean bill of health
 while the entire footer was unchecked. And it **counts what it skips** (fixed
 chrome, gradient grounds — neither has a single background colour to measure
 against) so those are visibly excluded rather than quietly dropped.
+
+### `npm run audit:devices` — responsive UI/UX
+
+[`scripts/audit-devices.mjs`](scripts/audit-devices.mjs) walks eight real device
+sizes, scrolling the whole page at each, and checks six things per size:
+
+| Check | Rule |
+|---|---|
+| `overflow` | horizontal scroll |
+| `tap` | targets under **44px on touch**, **24px on pointer** |
+| `type` | rendered text under 11px (iOS HIG floor) |
+| `occluded` | interactive elements trapped under the fixed bottom bar **at page end** |
+| `offscreen` | boxes extending past the viewport edge |
+| `affordance` | the hero scroll cue is actually visible at this size |
+
+It exists because "no horizontal overflow at 390px" was being reported as
+"mobile is fine", and those are not the same claim. A page can fit the viewport
+perfectly and still be unusable. The first run found **369 issues**, including:
+
+- **The hero had no scroll cue on any phone.** It was `hidden md:flex` — on a
+  *five-viewport-tall* hero, on the one layout where the cue matters most,
+  because the screen is a single dark frame with nothing suggesting more below.
+- **The mobile order bar's primary CTA was 35px tall.** The main conversion
+  target on the main device.
+- "Open in Google Maps →" and "Back to top ↑" were **10px tall** — a bare inline
+  `<a>` is exactly as tall as its text.
+- Every UI label sat at 10–11px, under the platform floor.
+
+Two calibrations were needed to make it trustworthy rather than noisy:
+
+- **Occlusion is only checked at the bottom of the document.** Mid-page,
+  elements pass under a fixed bar constantly — that is just scrolling. The first
+  version reported every element on the page in turn.
+- **Target size follows the input, not the breakpoint.** WCAG 2.5.5 (AAA) asks
+  44px, 2.5.8 (AA) asks 24px. Holding a desktop nav to 44px reports every
+  well-built site as broken. This caught a genuine bug the breakpoint alone
+  could not: the floating pill nav appears at `lg` (1024px), which is *iPad Pro
+  portrait* — a touch device — where its 32px links were too small.
 
 ### `npm run smoke` — behaviour after interaction
 

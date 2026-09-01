@@ -87,8 +87,11 @@ export default {
         // Martian Mono is a wide face and already carries generous sidebearings.
         // The 0.18em/0.22em tracking these had while they were set in Inter now
         // reads as broken-apart lettering, so both come right down.
-        label: ['0.6875rem', { lineHeight: '1', letterSpacing: '0.06em' }],
-        'label-sm': ['0.625rem', { lineHeight: '1', letterSpacing: '0.08em' }],
+        // Both came up one step: 11px and 10px sat under the iOS HIG 11pt floor
+        // and read as fine print on a phone, which is the wrong register for
+        // navigation and prices.
+        label: ['0.75rem', { lineHeight: '1', letterSpacing: '0.05em' }],
+        'label-sm': ['0.6875rem', { lineHeight: '1', letterSpacing: '0.07em' }],
       },
       spacing: {
         section: 'clamp(5rem, 12vw, 10rem)',

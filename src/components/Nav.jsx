@@ -111,7 +111,7 @@ export default function Nav() {
           <a
             href="#top"
             onClick={(e) => go(e, '#top')}
-            className={`shrink-0 font-display text-lg font-semibold tracking-tight transition-colors duration-700 md:text-xl ${railInk}`}
+            className={`flex min-h-11 shrink-0 items-center font-display text-lg font-semibold tracking-tight transition-colors duration-700 md:text-xl ${railInk}`}
           >
             Craving Point <span className="grad-text">.88</span>
           </a>
@@ -133,7 +133,7 @@ export default function Nav() {
               aria-expanded={open}
               aria-controls="mobile-menu"
               aria-label={open ? 'Close menu' : 'Open menu'}
-              className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 lg:hidden"
+              className="-mr-2 flex h-11 w-11 flex-col items-center justify-center gap-1.5 lg:hidden"
             >
               <span
                 className={`block h-px w-6 transition-transform duration-500 ease-lux ${
@@ -169,7 +169,7 @@ export default function Nav() {
               data-cursor-label="Go"
               // White at 80% rather than a token: this sits on the gradient in
               // both themes, so it must not follow the theme.
-              className="rounded-full px-5 py-2.5 font-mono text-label uppercase text-white/80 transition-colors duration-400 ease-lux hover:bg-white/20 hover:text-white"
+              className="flex min-h-11 items-center rounded-full px-5 font-mono text-label uppercase text-white/80 transition-colors duration-400 ease-lux hover:bg-white/20 hover:text-white"
             >
               {item.label}
             </a>
@@ -180,7 +180,7 @@ export default function Nav() {
             target="_blank"
             rel="noopener noreferrer"
             data-cursor-label="Order"
-            className="ml-1 rounded-full bg-white px-5 py-2.5 font-mono text-label uppercase text-[#7e2a14] transition-transform duration-400 ease-lux hover:scale-[1.03]"
+            className="ml-1 flex min-h-11 items-center rounded-full bg-white px-5 font-mono text-label uppercase text-[#7e2a14] transition-transform duration-400 ease-lux hover:scale-[1.03]"
           >
             Order
           </a>

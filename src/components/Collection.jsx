@@ -84,7 +84,7 @@ export default function Collection() {
                 id={`tab-${c.id}`}
                 onClick={() => setActive(c.id)}
                 data-cursor-label="Switch"
-                className={`btn !py-3 ${
+                className={`btn ${
                   selected
                     ? 'bg-ink text-ground'
                     : 'border border-line text-muted hover:border-accent hover:text-accent'

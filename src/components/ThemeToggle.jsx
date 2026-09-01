@@ -53,7 +53,7 @@ export default function ThemeToggle({ className = '', onFilm = false }) {
           onClick={() => set(opt.id)}
           aria-pressed={theme === opt.id}
           data-cursor-label={theme === opt.id ? undefined : `${opt.label} mode`}
-          className={`relative z-10 rounded-full px-3 py-1.5 font-mono text-label-sm uppercase transition-colors duration-400 ease-lux ${
+          className={`relative z-10 flex min-h-11 items-center rounded-full px-3.5 font-mono text-label-sm uppercase transition-colors duration-400 ease-lux ${
             theme === opt.id
               ? 'text-white'
               : onFilm

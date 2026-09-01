@@ -113,12 +113,17 @@ export default function Hero({ onProgress }) {
 
       {/* Scroll affordance. A scaleY loop that reads as a drip — on theme, and
           cheaper than animating height. */}
+      {/* Visible on every size. This was `hidden md:flex`, which left phones
+          with no scroll cue at all on a five-viewport-tall hero — the one layout
+          where the cue matters most, because the screen is a single dark frame
+          with nothing in it that suggests more is below. Centred on mobile,
+          where the copy stacks and the right gutter is occupied. */}
       <div
         aria-hidden="true"
-        className="absolute bottom-8 right-gutter hidden flex-col items-center gap-3 md:flex"
+        className="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 md:bottom-8 md:left-auto md:right-gutter md:translate-x-0 md:gap-3"
       >
         <span className="font-mono text-label-sm uppercase text-film-muted">Scroll</span>
-        <span className="relative block h-12 w-px overflow-hidden bg-film-ink/20">
+        <span className="relative block h-8 w-px overflow-hidden bg-film-ink/20 md:h-12">
           <span className="absolute inset-x-0 top-0 h-1/2 animate-drip bg-film-accent" />
         </span>
       </div>

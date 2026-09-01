@@ -181,6 +181,14 @@
     @apply font-mono tabular-nums;
   }
 
+  /* A standalone text link — "Open in Google Maps →", "Back to top ↑". These
+     rendered 10px tall, because a bare inline <a> is exactly as tall as its
+     text. Padded to a real target without changing how they look. */
+  .link-inline {
+    @apply -my-3 inline-flex min-h-11 items-center font-mono text-label-sm uppercase
+           transition-colors duration-300;
+  }
+
   /* ---------- Reveal primitives ----------
      These hold the *closed* state in CSS rather than in GSAP `from` values. The
      page prerenders, so a JS-set opening state would let the finished markup
@@ -213,8 +221,11 @@
 
   /* ---------- Buttons ---------- */
 
+  /* `min-h-11` is 44px — the WCAG 2.5.5 / iOS HIG minimum tap target. The
+     padding alone landed these at 43px, which passes a glance and fails an
+     audit, and 1px short is still short under a thumb. */
   .btn {
-    @apply relative inline-flex items-center justify-center gap-3
+    @apply relative inline-flex min-h-11 items-center justify-center gap-3
            font-mono text-label uppercase font-medium
            px-7 py-4
            transition-[background-color,color,border-color] duration-400 ease-lux

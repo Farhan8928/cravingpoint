@@ -14,7 +14,8 @@
     "assets:images": "node scripts/process-images.mjs",
     "audit": "node scripts/audit-contrast.mjs",
     "smoke": "node scripts/smoke.mjs",
-    "verify": "npm run audit && npm run smoke"
+    "verify": "npm run audit && npm run audit:devices && npm run smoke",
+    "audit:devices": "node scripts/audit-devices.mjs"
   },
   "dependencies": {
     "gsap": "^3.12.5",
