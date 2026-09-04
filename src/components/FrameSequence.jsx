@@ -50,6 +50,7 @@ export default function FrameSequence({
   const meta = SEQUENCES[sequence];
   const sectionRef = useRef(null);
   const canvasRef = useRef(null);
+  const backdropRef = useRef(null);
   const framesRef = useRef([]);
   const stateRef = useRef({ frame: 1, drawn: -1, warmed: -1 });
   const [loaded, setLoaded] = useState(0);
@@ -64,6 +65,21 @@ export default function FrameSequence({
     const canvas = canvasRef.current;
     const section = sectionRef.current;
     const ctx = canvas.getContext('2d', { alpha: false });
+
+    /**
+     * The ambient backdrop's context, at a fixed 32x32.
+     *
+     * Its whole output is blurred past recognition by CSS, so resolution is
+     * wasted on it — the point is the colour, not the detail. Fixed size means
+     * it never participates in resize, and one 32x32 drawImage per frame is
+     * close to free.
+     */
+    const backdrop = backdropRef.current;
+    const bctx = backdrop?.getContext('2d', { alpha: false }) ?? null;
+    if (backdrop) {
+      backdrop.width = 32;
+      backdrop.height = 32;
+    }
     const controller = new AbortController();
     const frames = framesRef.current;
     const reduced = prefersReducedMotion();
@@ -126,6 +142,16 @@ export default function FrameSequence({
       }
 
       ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
+
+      // Same frame, cover-fitted into the tiny backdrop. Drawn from the centre
+      // so the glow tracks the subject's colour rather than the frame's edges.
+      if (bctx) {
+        const bs = Math.max(32 / iw, 32 / ih);
+        const bw = iw * bs;
+        const bh = ih * bs;
+        bctx.drawImage(img, (32 - bw) / 2, (32 - bh) / 2, bw, bh);
+      }
+
       stateRef.current.drawn = target;
       if (!painted) setPainted(true);
 
@@ -226,12 +252,30 @@ export default function FrameSequence({
           />
         )}
 
+        {/* Ambient backdrop — the square block's surround on portrait.
+
+            The block leaves bare ground above and below it. The established fix
+            is a blurred, scaled copy of the frame filling that space: editors
+            call it "blanking fill", YouTube ships it as Ambient Mode, pulling
+            colour out of the frame and diffusing it outward. It turns dead bars
+            into a glow that belongs to the shot.
+
+            Deliberately tiny — 32px, upscaled by CSS. The output is blurred to
+            nothing anyway, so a 32x32 drawImage plus one GPU-composited CSS
+            filter costs almost nothing per frame, where blurring a full-screen
+            canvas in 2D context would cost a great deal. Hidden from md up,
+            where the film is already full-bleed and there is nothing to fill. */}
+        <canvas
+          ref={backdropRef}
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 h-full w-full scale-125 object-cover opacity-60 blur-[42px] saturate-150 md:hidden"
+        />
+
         {/* A block on portrait, full-bleed from md up.
             Apple's mobile media is roughly square rather than full viewport
             height, and that is the half of the pattern the asset alone cannot
             deliver: a 4:5 frame stretched over a 0.46-aspect screen would just
-            be cropped again. Anchored below the header rail so the copy has the
-            lower third to itself instead of sitting over the food. */}
+            be cropped again. */}
         <canvas
           ref={canvasRef}
           className="absolute inset-x-0 top-1/2 aspect-square h-auto w-full -translate-y-1/2 md:inset-0 md:top-0 md:aspect-auto md:h-full md:translate-y-0"
