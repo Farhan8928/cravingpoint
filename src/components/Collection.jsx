@@ -129,14 +129,9 @@ export default function Collection() {
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-baseline justify-between gap-4">
-                    <h3 className="font-display text-xl text-ink transition-transform duration-500 ease-lux group-hover:translate-x-1.5 md:text-2xl">
-                      {entry.name}
-                    </h3>
-                    <span className="num shrink-0 text-base text-ink md:text-lg">
-                      {entry.price}
-                    </span>
-                  </div>
+                  <h3 className="font-display text-xl text-ink transition-transform duration-500 ease-lux group-hover:translate-x-1.5 md:text-2xl">
+                    {entry.name}
+                  </h3>
                   <div className="mt-1.5 flex items-center gap-3">
                     <p className="text-sm text-muted">{entry.note}</p>
                     {entry.tags.map((tag) => (
@@ -176,12 +171,9 @@ export default function Collection() {
                 ))}
               </div>
 
-              <div className="mt-5 flex items-baseline justify-between gap-4 border-t border-line pt-4">
-                <div>
-                  <h3 className="font-display text-2xl text-ink">{item.name}</h3>
-                  <p className="mt-1 text-sm text-muted">{item.note}</p>
-                </div>
-                <span className="num grad-text shrink-0 text-xl font-medium">{item.price}</span>
+              <div className="mt-5 border-t border-line pt-4">
+                <h3 className="font-display text-2xl text-ink">{item.name}</h3>
+                <p className="mt-1 text-sm text-muted">{item.note}</p>
               </div>
             </div>
           </div>
@@ -191,7 +183,7 @@ export default function Collection() {
           <a href={BRAND.whatsapp} target="_blank" rel="noopener noreferrer" data-cursor-label="WhatsApp" className="btn-primary">
             Order on WhatsApp
           </a>
-          <p className="text-sm text-muted">Prices are indicative. Confirm at the counter.</p>
+          <p className="text-sm text-muted">Message us for today&rsquo;s rates and bulk pricing.</p>
         </Reveal>
       </div>
     </section>

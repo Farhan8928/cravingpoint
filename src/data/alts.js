@@ -7,7 +7,8 @@ export const ALTS = {
   "dish-wrap": "A chicken wrap cut open, showing grilled strips, onion and cucumber",
   "dish-combo": "The combo: waffle slices, a chicken wrap, a loaded tub, mini pancakes and drinks",
   "gift-boxes": "A row of kraft tubs packed for a bulk order",
-  "owner-portrait": "The founder of Craving Point .88, outside the shop",
-  "owner-candid": "The founder of Craving Point .88",
+  "owner-portrait": "The founder of Craving Point .88",
+  "owner-candid": "The founder of Craving Point .88, smiling outside the shop",
+  "dish-momos": "Steamed hand-pleated momos ringed around a bowl of red chutney",
   "gift-detail": "A person holding out an open bakery box of filled doughnuts"
 };

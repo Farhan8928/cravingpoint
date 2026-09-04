@@ -76,15 +76,11 @@ export const IMAGES = {
     "widths": [
       480,
       800,
-      1200,
-      1600,
-      2000,
-      2400,
-      3024
+      1023
     ],
     "w": 1000,
     "h": 1250,
-    "alt": "The founder of Craving Point .88, outside the shop"
+    "alt": "The founder of Craving Point .88"
   },
   "owner-candid": {
     "widths": [
@@ -93,7 +89,18 @@ export const IMAGES = {
     ],
     "w": 1200,
     "h": 1200,
-    "alt": "The founder of Craving Point .88"
+    "alt": "The founder of Craving Point .88, smiling outside the shop"
+  },
+  "dish-momos": {
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ],
+    "w": 1200,
+    "h": 1200,
+    "alt": "Steamed hand-pleated momos ringed around a bowl of red chutney"
   },
   "gift-detail": {
     "widths": [

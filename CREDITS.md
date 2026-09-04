@@ -4,7 +4,7 @@
 
 | Asset | Source |
 |---|---|
-| `owner-portrait` | Client photograph (`owner-2.jpeg`) |
+| `owner-portrait` | Client photograph (`owner-3.jpeg`) |
 | `owner-candid` | Client photograph (`owner-1.jpeg`) |
 | `gift-detail` | [Jojo Yuen](https://unsplash.com/@jojoyuen) via [Unsplash](https://unsplash.com/license) |
 

@@ -423,6 +423,7 @@ sizes, scrolling the whole page at each, and checks six things per size:
 | `occluded` | interactive elements trapped under the fixed bottom bar **at page end** |
 | `offscreen` | boxes extending past the viewport edge |
 | `affordance` | the hero scroll cue is actually visible at this size |
+| `emoji-font` | characters a phone will draw from its colour-emoji font |
 
 It exists because "no horizontal overflow at 390px" was being reported as
 "mobile is fine", and those are not the same claim. A page can fit the viewport
@@ -437,7 +438,24 @@ perfectly and still be unusable. The first run found **369 issues**, including:
   `<a>` is exactly as tall as its text.
 - Every UI label sat at 10–11px, under the platform floor.
 
-Two calibrations were needed to make it trustworthy rather than noisy:
+#### The emoji-font check
+
+`✳` (U+2733) shipped as a **green emoji tile** on Android and iOS while looking
+perfectly correct in every desktop test. Its default presentation is text, but
+the system colour-emoji font claims the codepoint and sits earlier in the mobile
+fallback chain. Desktop Chrome on Windows resolves it from Segoe UI Symbol and
+shows the intended glyph — so the defect is **invisible on the platform the tests
+run on**, and no amount of screenshotting would have found it.
+
+The marquee separator is now an inline SVG. `U+FE0E` would force text
+presentation, but it still depends on the font stack honouring it; an SVG has no
+font dependency at all and takes `currentColor`.
+
+The check walks rendered text for codepoints with `Emoji=Yes` that are not
+followed by `U+FE0E`. It was validated by reintroducing the original character
+and confirming it fails — a test that has only ever passed has proven nothing.
+
+#### Two calibrations were needed to make it trustworthy rather than noisy:
 
 - **Occlusion is only checked at the bottom of the document.** Mid-page,
   elements pass under a fixed bar constantly — that is just scrolling. The first
@@ -676,11 +694,12 @@ Camp Road, near Noor Masjid, Cheeta Camp, Trombay, Mumbai 400088
 form so it works on first deploy; swap in a Maps Embed API URL if you want the
 branded pin.
 
-**3. Prices are indicative, and the menu may be short.** The photographs show
-the products but not what they cost, which is why the page carries a visible
-"confirm at the counter" line. The menu in
+**3. There are no prices on the site, by choice.** A street counter changes them
+more often than a website gets redeployed, and a stale price is worse than no
+price — it is a promise the counter has to either honour or argue about. The
+WhatsApp button is the quote. The menu in
 [`src/data/menu.js`](src/data/menu.js) is only what the supplied photographs
-show — six items. If the counter serves more, add them there with a photo each;
+show — seven items. If the counter serves more, add them there with a photo each;
 the whole Collection section is driven by that file.
 
 ---

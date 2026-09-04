@@ -127,20 +127,23 @@ const SOURCES = {
 
   // ---- The founder. Real photographs. ----
   'owner-portrait': {
-    file: 'owner-2.jpeg',
+    file: 'owner-3.jpeg',
     ratio: PORTRAIT,
     // Portraits crop from the top, never by salience. `attention` scores
     // contrast, and on a standing shot the brightest, busiest region is the
     // shirt — it cropped this man's head clean off. Heads live at the top of a
     // portrait; that is a rule, not a heuristic.
     position: 'top',
-    alt: 'The founder of Craving Point .88, outside the shop',
+    alt: 'The founder of Craving Point .88',
   },
   'owner-candid': {
     file: 'owner-1.jpeg',
     ratio: SQUARE,
-    position: 'top',
-    alt: 'The founder of Craving Point .88',
+    // The face sits about a third of the way down this frame, under a lot of
+    // flag. `top` put the chin on the bottom edge and `attention` cropped to the
+    // shirt cuff — see focusBox().
+    focusY: 0.35,
+    alt: 'The founder of Craving Point .88, smiling outside the shop',
   },
 };
 
@@ -150,6 +153,19 @@ const SOURCES = {
  * in it at all, so this is the only real hand on the page — worth keeping.
  */
 const REMOTE = {
+  /**
+   * Momos, which the client asked for but supplied no photograph of. A real
+   * Unsplash photo is used rather than generating one: the rest of the menu is
+   * already AI imagery, and adding more would push the page past the point where
+   * a visitor can believe any of it. Replace with a shot of the counter's own.
+   */
+  'dish-momos': {
+    photo: 'photo-1694923450868-b432a8ee52aa',
+    ratio: DISH,
+    by: 'Kabita Darlami',
+    at: 'https://unsplash.com/@itskabita',
+    alt: 'Steamed hand-pleated momos ringed around a bowl of red chutney',
+  },
   'gift-detail': {
     photo: 'photo-1622071726728-c32575ae96a3',
     by: 'Jojo Yuen',
@@ -165,6 +181,29 @@ async function fetchRemote(slug, id) {
   if (!res.ok) throw new Error(`${res.status} for ${slug}`);
   await pipeline(Readable.fromWeb(res.body), fs.createWriteStream(file));
   return file;
+}
+
+/**
+ * Builds the crop box for a `focusY` asset.
+ *
+ * `position` gravities only offer top/centre/bottom, and salience-based cropping
+ * has twice picked a shirt over a face. `focusY` says where the subject actually
+ * is as a fraction of the source height, and the largest box matching the target
+ * ratio is centred on that point and clamped inside the frame. It survives a
+ * source swap in a way a hardcoded pixel offset would not.
+ */
+function focusBox(meta, ratio, focusY) {
+  const targetAR = ratio.w / ratio.h;
+  let w = meta.width;
+  let h = Math.round(w / targetAR);
+  if (h > meta.height) {
+    h = meta.height;
+    w = Math.round(h * targetAR);
+  }
+  const centre = meta.height * focusY;
+  const top = Math.round(Math.min(Math.max(centre - h / 2, 0), meta.height - h));
+  const left = Math.round((meta.width - w) / 2);
+  return { left, top, width: w, height: h };
 }
 
 async function emit(slug, srcFile, cfg) {
@@ -190,9 +229,13 @@ async function emit(slug, srcFile, cfg) {
   if (nativeCap > top + 32) widths.push(nativeCap);
   if (!widths.length) widths.push(nativeCap);
 
+  const box = cfg.focusY != null ? focusBox(meta, ratio, cfg.focusY) : null;
+
   for (const w of widths) {
     const h = Math.round((ratio.h / ratio.w) * w);
-    await sharp(srcFile)
+    const pipe = sharp(srcFile);
+    if (box) pipe.extract(box);
+    await pipe
       // `attention` crops around the most salient region rather than the
       // geometric centre — on a plated dish that is the food. Portraits override
       // it with `position: 'top'`; see the note on owner-portrait.

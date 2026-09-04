@@ -8,15 +8,16 @@
  * cream doughnuts and a chicken wrap. Writing a menu the shop does not serve is
  * worse than a short one.
  *
- * ⚠ TWO THINGS THE CLIENT STILL NEEDS TO CONFIRM:
+ * ⚠ ONE THING THE CLIENT STILL NEEDS TO CONFIRM:
  *
- *   1. **Prices are indicative**, not quoted. The photographs show the products
- *      but not what they cost. The page carries a visible "confirm at the
- *      counter" line for exactly this reason — replace these with the real
- *      counter prices before that line can come off.
- *   2. **This is only what the photographs show.** If the counter serves more —
- *      shakes, brownies, other wraps — add them here with a photo each; the
- *      Collection section is driven entirely by this file.
+ * **This is only what the photographs show.** If the counter serves more —
+ * shakes, brownies, other wraps — add them here with a photo each; the
+ * Collection section is driven entirely by this file.
+ *
+ * Prices are deliberately **not** on the site. A street counter changes them
+ * more often than a website gets redeployed, and a stale price is worse than no
+ * price: it is a promise the counter has to either honour or argue about. The
+ * WhatsApp button is the quote.
  *
  * `image` names an asset emitted by scripts/process-images.mjs. Every item needs
  * one: the layout uses a thumbnail on mobile and a sticky panel on desktop, and
@@ -33,28 +34,24 @@ export const COLLECTIONS = [
       {
         name: 'Belgian Waffle Slice',
         note: 'Cut thick, drizzled warm, eaten off the board',
-        price: '₹180',
         tags: ['Signature'],
         image: 'dish-waffle',
       },
       {
         name: 'The Loaded Tub',
         note: 'Chocolate chunk, Ferrero, Oreo or caramel. Filled to the rim',
-        price: '₹220',
         tags: ['Bestseller'],
         image: 'dish-tub',
       },
       {
         name: 'Sundae',
         note: 'Cream, crushed nuts, wafer, sauce and a cherry on top',
-        price: '₹160',
         tags: [],
         image: 'dish-sundae',
       },
       {
         name: 'Cream Doughnut',
         note: 'Sugar-dusted, filled to order, still soft',
-        price: '₹90',
         tags: [],
         image: 'dish-doughnut',
       },
@@ -67,16 +64,20 @@ export const COLLECTIONS = [
     blurb: 'Marked on charcoal, folded to order, cut while the tawa is still loud.',
     items: [
       {
+        name: 'Steamed Momos',
+        note: 'Hand-pleated, steamed to order, with the red chutney',
+        tags: [],
+        image: 'dish-momos',
+      },
+      {
         name: 'Chicken Wrap',
         note: 'Grilled strips, red onion, cucumber, house sauce',
-        price: '₹160',
         tags: ['Signature'],
         image: 'dish-wrap',
       },
       {
         name: 'The Combo',
         note: 'Wrap, waffle slice, a loaded tub and a cold drink',
-        price: '₹420',
         tags: ['Sharing'],
         image: 'dish-combo',
       },

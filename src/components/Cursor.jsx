@@ -40,6 +40,7 @@ export default function Cursor() {
 
     // The pointer's true position, and the blob's lagging position. The gap
     // between them *is* the velocity.
+    const LABEL_OFFSET = { x: 18, y: 26 };
     const target = { x: innerWidth / 2, y: innerHeight / 2 };
     const pos = { ...target };
     let visible = false;
@@ -69,8 +70,20 @@ export default function Cursor() {
 
       // While labelled the blob is a pill of text — deforming it would make the
       // word unreadable, so the physics is suspended and only position tracks.
+      // Offset the label clear of the pointer.
+      //
+      // The blob is centred on the cursor, which is right for a small drop and
+      // wrong for a 100px pill: it sits on top of the very control you are
+      // pointing at and hides its label. Nudging it down-right keeps the target
+      // readable while the word stays attached to the pointer.
       if (labelled) {
-        gsap.set(blob, { x: pos.x, y: pos.y, rotate: 0, scaleX: 1, scaleY: 1 });
+        gsap.set(blob, {
+          x: pos.x + LABEL_OFFSET.x,
+          y: pos.y + LABEL_OFFSET.y,
+          rotate: 0,
+          scaleX: 1,
+          scaleY: 1,
+        });
         return;
       }
 
