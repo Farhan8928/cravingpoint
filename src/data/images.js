@@ -61,6 +61,54 @@ export const IMAGES = {
     "h": 1200,
     "alt": "The combo: waffle slices, a chicken wrap, a loaded tub, mini pancakes and drinks"
   },
+  "momo-steam": {
+    "widths": [
+      420
+    ],
+    "w": 1200,
+    "h": 1200,
+    "alt": "Steamed chicken momos with red chutney"
+  },
+  "momo-fry": {
+    "widths": [
+      420
+    ],
+    "w": 1200,
+    "h": 1200,
+    "alt": "Fried chicken momos with red chutney"
+  },
+  "momo-boomboom": {
+    "widths": [
+      420
+    ],
+    "w": 1200,
+    "h": 1200,
+    "alt": "Chicken momos in yellow boom boom sauce"
+  },
+  "momo-tandoori": {
+    "widths": [
+      420
+    ],
+    "w": 1200,
+    "h": 1200,
+    "alt": "Steamed chicken momos in tandoori sauce"
+  },
+  "momo-chatpata": {
+    "widths": [
+      420
+    ],
+    "w": 1200,
+    "h": 1200,
+    "alt": "Chatpata steamed chicken momos with onion"
+  },
+  "momo-cheese": {
+    "widths": [
+      420
+    ],
+    "w": 1200,
+    "h": 1200,
+    "alt": "Chicken momos in white cheese pasta sauce"
+  },
   "gift-boxes": {
     "widths": [
       480,
@@ -90,17 +138,6 @@ export const IMAGES = {
     "w": 1200,
     "h": 1200,
     "alt": "The founder of Craving Point .88, smiling outside the shop"
-  },
-  "dish-momos": {
-    "widths": [
-      480,
-      800,
-      1200,
-      1600
-    ],
-    "w": 1200,
-    "h": 1200,
-    "alt": "Steamed hand-pleated momos ringed around a bowl of red chutney"
   },
   "gift-detail": {
     "widths": [

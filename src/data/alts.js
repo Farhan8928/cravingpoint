@@ -6,9 +6,14 @@ export const ALTS = {
   "dish-doughnut": "Cream-filled doughnuts dusted with sugar on a plate",
   "dish-wrap": "A chicken wrap cut open, showing grilled strips, onion and cucumber",
   "dish-combo": "The combo: waffle slices, a chicken wrap, a loaded tub, mini pancakes and drinks",
+  "momo-steam": "Steamed chicken momos with red chutney",
+  "momo-fry": "Fried chicken momos with red chutney",
+  "momo-boomboom": "Chicken momos in yellow boom boom sauce",
+  "momo-tandoori": "Steamed chicken momos in tandoori sauce",
+  "momo-chatpata": "Chatpata steamed chicken momos with onion",
+  "momo-cheese": "Chicken momos in white cheese pasta sauce",
   "gift-boxes": "A row of kraft tubs packed for a bulk order",
   "owner-portrait": "The founder of Craving Point .88",
   "owner-candid": "The founder of Craving Point .88, smiling outside the shop",
-  "dish-momos": "Steamed hand-pleated momos ringed around a bowl of red chutney",
   "gift-detail": "A person holding out an open bakery box of filled doughnuts"
 };

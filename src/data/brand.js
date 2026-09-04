@@ -17,13 +17,18 @@ export const BRAND = {
   // Was 'The Art of Indulgence'. A vague aspirational line that could sit on
   // any dessert brand on earth is the textbook generated-copy tell; this one
   // says something only this shop can say.
-  tagline: 'Made when you ask, not before',
+  // The counter's own line, printed on every card.
+  tagline: 'Every bite, pure delight',
   description:
     'Waffles, loaded tubs and charcoal wraps in Cheeta Camp, Trombay. Made when you ask, not before.',
 
-  phone: '+919819940231',
-  phoneDisplay: '+91 98199 40231',
-  whatsapp: 'https://wa.me/919819940231',
+  // Both numbers are printed on the counter's own momo card. The first is the
+  // one the site dials and opens WhatsApp on; the second is listed as a backup.
+  phone: '+917021235530',
+  phoneDisplay: '+91 70212 35530',
+  phoneAlt: '+919004756897',
+  phoneAltDisplay: '+91 90047 56897',
+  whatsapp: 'https://wa.me/917021235530',
   // ⚠ PLACEHOLDER — replace with the real address or drop it from the footer.
   email: 'hello@cravingpoint.example',
 

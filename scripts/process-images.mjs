@@ -117,6 +117,21 @@ const SOURCES = {
     alt: 'The combo: waffle slices, a chicken wrap, a loaded tub, mini pancakes and drinks',
   },
 
+  /**
+   * The six momo varieties, cropped out of the client's own momo card.
+   *
+   * Each tile on that card carries a baked-in title, a "6 PCS" label and a
+   * watermark, so the usable bowl is a ~174px band — enough for a menu
+   * thumbnail at 2-3x DPR and no more. They are displayed small for exactly that
+   * reason; blown up they would be visibly soft.
+   */
+  'momo-steam': { ratio: DISH, file: 'momo-steam.webp', alt: 'Steamed chicken momos with red chutney' },
+  'momo-fry': { ratio: DISH, file: 'momo-fry.webp', alt: 'Fried chicken momos with red chutney' },
+  'momo-boomboom': { ratio: DISH, file: 'momo-boomboom.webp', alt: 'Chicken momos in yellow boom boom sauce' },
+  'momo-tandoori': { ratio: DISH, file: 'momo-tandoori.webp', alt: 'Steamed chicken momos in tandoori sauce' },
+  'momo-chatpata': { ratio: DISH, file: 'momo-chatpata.webp', alt: 'Chatpata steamed chicken momos with onion' },
+  'momo-cheese': { ratio: DISH, file: 'momo-cheese.webp', alt: 'Chicken momos in white cheese pasta sauce' },
+
   // ---- Gifting. The tubs are the actual bulk product. ----
   'gift-boxes': {
     file: 'tubs.png',
@@ -153,19 +168,6 @@ const SOURCES = {
  * in it at all, so this is the only real hand on the page — worth keeping.
  */
 const REMOTE = {
-  /**
-   * Momos, which the client asked for but supplied no photograph of. A real
-   * Unsplash photo is used rather than generating one: the rest of the menu is
-   * already AI imagery, and adding more would push the page past the point where
-   * a visitor can believe any of it. Replace with a shot of the counter's own.
-   */
-  'dish-momos': {
-    photo: 'photo-1694923450868-b432a8ee52aa',
-    ratio: DISH,
-    by: 'Kabita Darlami',
-    at: 'https://unsplash.com/@itskabita',
-    alt: 'Steamed hand-pleated momos ringed around a bowl of red chutney',
-  },
   'gift-detail': {
     photo: 'photo-1622071726728-c32575ae96a3',
     by: 'Jojo Yuen',

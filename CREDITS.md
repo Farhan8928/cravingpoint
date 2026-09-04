@@ -4,6 +4,12 @@
 
 | Asset | Source |
 |---|---|
+| `momo-steam` | Client photograph (`momo-steam.webp`) |
+| `momo-fry` | Client photograph (`momo-fry.webp`) |
+| `momo-boomboom` | Client photograph (`momo-boomboom.webp`) |
+| `momo-tandoori` | Client photograph (`momo-tandoori.webp`) |
+| `momo-chatpata` | Client photograph (`momo-chatpata.webp`) |
+| `momo-cheese` | Client photograph (`momo-cheese.webp`) |
 | `owner-portrait` | Client photograph (`owner-3.jpeg`) |
 | `owner-candid` | Client photograph (`owner-1.jpeg`) |
 | `gift-detail` | [Jojo Yuen](https://unsplash.com/@jojoyuen) via [Unsplash](https://unsplash.com/license) |
