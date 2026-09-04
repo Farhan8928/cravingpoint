@@ -179,6 +179,29 @@ width from a 720px landscape tier — a 4.2x upscale of a frame that was then
 mostly cropped away. The square tier is drawn near 1:1, and at 9.2 MB it costs
 less than the 16.5 MB desktop tier while carrying more useful pixels per byte.
 
+#### Filling the space around the block
+
+The square block leaves bare ground above and below it. Two established
+techniques cover that, and they are the same idea: editors call it **"blanking
+fill"** — a stretched, blurred copy of the frame behind the letterbox — and
+YouTube ships it as **Ambient Mode**, pulling colour out of the frame and
+diffusing it outward.
+
+There is now a second canvas doing exactly that. It is **32x32**, upscaled by
+CSS with `blur(42px) saturate(150%)` at 60% opacity. The output is blurred past
+recognition, so resolution would be wasted on it — the point is the colour, not
+the detail. One 32x32 `drawImage` per frame plus one GPU-composited CSS filter is
+close to free, where blurring a full-screen canvas in 2D context would not be. It
+is `md:hidden`, since the film is already full-bleed on wider screens.
+
+**The contrast audit cannot see this.** It resolves backgrounds by walking the
+DOM, and the glow is canvas pixels — so it reported clean while the copy sat on a
+mid-brown wash. Checked instead by screenshotting at four scroll positions per
+sequence and sampling the actual rendered pixel beside each glyph. That first
+pass reported six failures, all of them on the hero copy at mid-scroll — text
+that has already faded to zero via an *ancestor's* opacity, which the sampler was
+not accounting for. With cumulative opacity applied: no visible text fails.
+
 ### The cursor
 
 A drop of chocolate. It carries the gradient and **squashes and stretches along
