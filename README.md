@@ -139,6 +139,46 @@ is whether it is open, so that status is computed from the real hours. And a
 **floating gradient pill nav**, bottom-centre, which fades in once you are past
 the hero and is the one persistent element always showing the brand colour.
 
+### Mobile framing
+
+The first attempt at this letterboxed the frame — capped how much `cover` was
+allowed to crop and painted bars around the rest. That treated the symptom.
+Checking what this class of site actually does gave a better answer.
+
+**Apple ships different aspect ratios per breakpoint, not one image cropped by
+CSS.** Measured from their live AirPods page:
+
+| Asset | `small` (mobile) | `medium` | `large` (desktop) |
+|---|---|---|---|
+| Hero | 734x800 — **0.92 portrait** | 1068x1200 — 0.89 | 1800x1050 — **1.71 landscape** |
+| Highlights | 400x480 — **0.83 portrait** | 934x628 — 1.49 | 1260x680 — 1.85 |
+
+Two things follow, and both matter: the mobile asset is a **re-framed shot**, and
+their mobile media block is roughly square rather than full viewport height.
+
+So there is now a third frame tier, `p720` — a **1:1 crop made at build time**,
+not a resize — and on portrait viewports the canvas is a square block rather than
+full-bleed. Source and box agree, so nothing is cropped or letterboxed at render
+time. `pickTier()` selects it on viewport aspect < 0.9, and the `<link
+rel=preload>` tags carry matching `media` queries so a phone never downloads a
+landscape frame it will not draw.
+
+**Square, not Apple's 0.8-0.9.** Their mobile asset is shot for portrait; ours is
+a crop of a landscape master, so every point of extra height costs real width.
+1:1 keeps 56% of the frame where 4:5 keeps 45%.
+
+| Device | Before | After |
+|---|---|---|
+| iPhone 13/14 | 26% visible | **56%**, fills the block |
+| Pixel 7 | 25% | **56%** |
+| iPhone SE | 32% | **56%** |
+| Desktop | 100% | 100%, untouched |
+
+It is also sharper and lighter. `cover` was asking for 3001 device pixels of
+width from a 720px landscape tier — a 4.2x upscale of a frame that was then
+mostly cropped away. The square tier is drawn near 1:1, and at 9.2 MB it costs
+less than the 16.5 MB desktop tier while carrying more useful pixels per byte.
+
 ### The cursor
 
 A drop of chocolate. It carries the gradient and **squashes and stretches along
@@ -152,8 +192,10 @@ rotation, `scaleX`, and an inverse `scaleY`. Conserving volume that way is what
 makes it read as liquid instead of as a circle being scaled.
 
 It also **carries a label**. Anything with `data-cursor-label` expands the blob
-into a pill showing that word — `Order`, `Switch`, `Maps`, and on menu rows the
-dish's price. That is the part that earns its place: an affordance, not an
+into a pill showing that word — `Order`, `Switch`, `Maps`, `Enquire`. The pill is
+offset down-right of the pointer rather than centred on it: centred is correct
+for a 14px drop and wrong for a 100px pill, which then covers the very control
+you are pointing at. That is the part that earns its place: an affordance, not an
 effect. (First attempt labelled rows with the last word of the dish name, which
 produced `CUP`, `FOURS` and `STACK` — the price is always short and always means
 something.)

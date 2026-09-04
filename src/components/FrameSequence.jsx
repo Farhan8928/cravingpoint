@@ -4,6 +4,13 @@ import { loadSequence, pickTier, warmWindow, disposeFrames, TIER_WIDTH } from '.
 import { SEQUENCES } from '../data/sequences';
 
 /**
+ * The bars either side of a letterboxed frame. Matches `--film-ground`, the
+ * section's own background, so on this dark vignetted footage they read as the
+ * frame's surround rather than as empty canvas.
+ */
+const LETTERBOX = '#100C09';
+
+/**
  * A scroll-scrubbed film sequence painted to a canvas.
  *
  * The section is `N * 100vh` with a sticky viewport inside it; scroll progress
@@ -93,9 +100,30 @@ export default function FrameSequence({
       const ih = img.naturalHeight || img.height;
       if (!iw || !ih) return;
 
-      const scale = fit === 'contain' ? Math.min(cw / iw, ch / ih) : Math.max(cw / iw, ch / ih);
+      /**
+       * Plain cover — and it crops almost nothing, because the *asset* already
+       * matches the box.
+       *
+       * An earlier version letterboxed here instead, capping how much cover was
+       * allowed to crop. That treated the symptom: the real fix is to stop asking
+       * a 16:9 frame to fill a 0.46-aspect screen at all. `pickTier` now serves a
+       * 4:5 re-framed tier to portrait viewports and the canvas below is a square
+       * block on those sizes, so source and box agree and there is nothing to
+       * crop or to letterbox.
+       */
+      const cover = Math.max(cw / iw, ch / ih);
+      const contain = Math.min(cw / iw, ch / ih);
+      const scale = fit === 'contain' ? contain : cover;
+
       const dw = iw * scale;
       const dh = ih * scale;
+
+      // Letterbox bars have to be painted: the canvas is opaque, so without this
+      // the previous frame stays visible in the margins.
+      if (dw < cw || dh < ch) {
+        ctx.fillStyle = LETTERBOX;
+        ctx.fillRect(0, 0, cw, ch);
+      }
 
       ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
       stateRef.current.drawn = target;
@@ -198,9 +226,15 @@ export default function FrameSequence({
           />
         )}
 
+        {/* A block on portrait, full-bleed from md up.
+            Apple's mobile media is roughly square rather than full viewport
+            height, and that is the half of the pattern the asset alone cannot
+            deliver: a 4:5 frame stretched over a 0.46-aspect screen would just
+            be cropped again. Anchored below the header rail so the copy has the
+            lower third to itself instead of sitting over the food. */}
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 h-full w-full"
+          className="absolute inset-x-0 top-1/2 aspect-square h-auto w-full -translate-y-1/2 md:inset-0 md:top-0 md:aspect-auto md:h-full md:translate-y-0"
           // Decorative: the section's own copy carries the meaning.
           role="img"
           aria-label={meta.label}

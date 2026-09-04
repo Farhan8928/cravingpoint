@@ -68,7 +68,7 @@ export default function Hero({ onProgress }) {
     <FrameSequence id="hero" sequence="hero" scrollLength={5} onProgress={onProgress}>
       <div
         ref={copyRef}
-        className="absolute inset-0 flex flex-col justify-end px-gutter pb-24 md:pb-28"
+        className="absolute inset-0 flex flex-col justify-end px-gutter pb-28 md:pb-28"
       >
         <div className="mx-auto w-full max-w-container">
           <span data-fade className="eyebrow block translate-y-4 !text-film-accent opacity-0">

@@ -89,9 +89,35 @@ const SEQUENCES = {
  * tier. That is the right trade: the frames are the site, and a device only ever
  * downloads one tier.
  */
+/**
+ * Three tiers, and the third one is art direction rather than a resize.
+ *
+ * Apple ships genuinely different *aspect ratios* per breakpoint, not one image
+ * cropped by CSS — their AirPods hero is 1800x1050 (1.71, landscape) at `large`
+ * and 734x800 (0.92, portrait) at `small`. The mobile asset is a re-framed shot,
+ * and their mobile media block is roughly square rather than full viewport
+ * height. Both halves of that matter.
+ *
+ * A 16:9 frame cannot fill a 0.46-aspect phone screen: filling the height threw
+ * away 74% of the width and turned a wide shot of a grilled wrap into an
+ * unreadable close-up of its own centre. Cropping in the browser only chooses
+ * where the loss lands; cropping here chooses it deliberately, ships a quarter
+ * of the bytes, and lets the phone render at native resolution instead of
+ * upscaling a landscape frame 4x.
+ *
+ * Square, not Apple's 0.8-0.9. Their mobile asset is a purpose-shot portrait
+ * frame; ours is a crop of a landscape master, so every point of extra height
+ * costs real width. 1:1 keeps **56%** of the frame against 45% at 4:5, and still
+ * fills a phone properly — a deliberate shape rather than a thin strip.
+ *
+ * Checked against the tub spread, the waffle pour, the brownie splash and the
+ * wrap: all are centre-composed, so `position: centre` is honest here. Footage
+ * with an off-centre subject would need a per-shot focal point.
+ */
 const TIERS = [
   { name: 'w1280', width: 1280, quality: 84 },
   { name: 'w720', width: 720, quality: 80 },
+  { name: 'p720', width: 720, height: 720, quality: 82, portrait: true },
 ];
 
 /** Frames pulled out of the sequences to serve as ordinary stills elsewhere. */
@@ -148,14 +174,22 @@ async function buildSequence(key, cfg) {
 
     for (let i = 0; i < picked.length; i += 1) {
       const out = path.join(tierDir, `${pad(i + 1)}.webp`);
-      await sharp(frameFile(cfg.dir, picked[i]))
-        // `withoutEnlargement` keeps the 1440 tier honest against a 1280 master.
-        .resize({ width: tier.width, withoutEnlargement: true })
-        .webp({ quality: tier.quality, effort: 5 })
-        .toFile(out);
+      const pipe = sharp(frameFile(cfg.dir, picked[i]));
+
+      if (tier.portrait) {
+        // A real re-frame, not a resize: the landscape master is cropped to the
+        // portrait tier's aspect here so the phone never has to crop in CSS.
+        pipe.resize(tier.width, tier.height, { fit: 'cover', position: 'centre' });
+      } else {
+        // `withoutEnlargement` keeps the desktop tier honest against a 1280 master.
+        pipe.resize({ width: tier.width, withoutEnlargement: true });
+      }
+
+      await pipe.webp({ quality: tier.quality, effort: 5 }).toFile(out);
       bytes += fs.statSync(out).size;
     }
-    console.log(`  ${key}/${tier.name}  ${picked.length} frames`);
+    const shape = tier.portrait ? `${tier.width}x${tier.height} portrait` : `${tier.width}w landscape`;
+    console.log(`  ${key}/${tier.name}  ${picked.length} frames  ${shape}`);
   }
 
   // Poster + LQIP, both taken from the frame the sequence is "about" rather

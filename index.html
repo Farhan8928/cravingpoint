@@ -69,8 +69,24 @@
     <!-- The hero's first frames decide whether the opening scrub is smooth.
          Two at the mobile tier costs ~40 kB and takes the handshake off the
          critical path for every device. -->
-    <link rel="preload" as="image" href="/frames/hero/w720/0001.webp" />
-    <link rel="preload" as="image" href="/frames/hero/w720/0002.webp" />
+    <link
+      rel="preload"
+      as="image"
+      href="/frames/hero/p720/0001.webp"
+      media="(max-aspect-ratio: 9/10)"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="/frames/hero/p720/0002.webp"
+      media="(max-aspect-ratio: 9/10)"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="/frames/hero/w1280/0001.webp"
+      media="(min-aspect-ratio: 9/10)"
+    />
 
     <script type="application/ld+json">
       {
