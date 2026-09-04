@@ -621,6 +621,43 @@ year, and two or three genuine customer lines.
 
 ---
 
+## The menu
+
+78 items, 12 categories, two counters — transcribed from the client's four
+cards, which live in [`assets-src/menu-cards/`](assets-src/menu-cards/) as the
+proofreading source of truth.
+
+**It is live HTML, not the card photographs.** That is the single most consequential
+decision here. A menu shipped as an image or a PDF cannot be searched, selected,
+read aloud, translated or resized, and this is the page most likely to be opened
+on a phone by someone standing outside the shop. The industry guidance is blunt:
+*"Menu is never a PDF — it's a live, scrollable, searchable HTML page,"* and
+restaurants making that switch report **up to 58% more completed orders**.
+
+The layout follows what actually works at this size:
+
+- **A sticky category rail.** Anchors are the standard answer to a long menu —
+  they let someone hunting for "shawarma" arrive in one tap. Horizontally
+  scrollable on phones, where twelve chips will not fit on a line.
+- **Two columns on desktop, one on mobile.** `columns-2` with
+  `break-inside-avoid` mirrors the printed card, and that is not nostalgia: two
+  narrow columns scan faster than one wide one because the eye travels less per
+  item. `break-inside-avoid` matters — a price table split across a column break
+  is unreadable.
+- **Photos where they earn it.** Photo menus convert ~25% better, but that
+  finding is about *feature* photography, not a thumbnail per line. Categories
+  with a picture get one at their head. Momos are the only category where every
+  item has its own shot, so it is the only grid.
+- **Prices as a real table.** Waffles price by slice and bowls by size, so those
+  categories carry column headers and aligned figures. Mono numerals hold the
+  columns true. The savoury items the cards do not price show "Ask" rather than
+  a guess.
+
+The six momo photographs were cropped out of the client's own momo card. Each
+tile there carries a baked-in title, a "6 PCS" label and a watermark, so the
+usable bowl is a ~174px band — enough for a menu thumbnail and no more, which is
+why they are displayed small.
+
 ## Client assets
 
 `assets-src/client/` holds the originals the client supplied, committed so
